@@ -1,6 +1,7 @@
 import "../stylesheets/app.css";
 import { default as Web3} from 'web3';
-import { default as contract } from 'truffle-contract'
+import { default as contract } from 'truffle-contract';
+import { default as CryptoJS } from 'crypto-js';
 
 var accounts;
 var account;
@@ -41,6 +42,20 @@ window.App = {
        }
     });
     
+  },
+  addNewLocation: function () {
+    var contractAddress = document.getElementById('contractAddress').value;
+    var deployedFoodSafe = foodSafeContract.at(contractAddress);
+
+    var locationId = document.getElementById('locationId').value;
+    var locationName = document.getElementById('locationName').value;
+    var locationSecret = document.getElementById('secret').value;
+    var passPhrase = document.getElementById('passPhrase').value;
+
+    var encryptedSecret= CryptoJS.AES.encrypt(locationSecret, passPhrase).toString();
+    deployedFoodSafe.AddNewLocation(locationId, locationName, encryptedSecret, function(error) {
+      console.log(error);
+    })
   }
 };
 
