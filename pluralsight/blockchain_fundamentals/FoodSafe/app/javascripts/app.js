@@ -56,6 +56,21 @@ window.App = {
     deployedFoodSafe.AddNewLocation(locationId, locationName, encryptedSecret, function(error) {
       console.log(error);
     })
+  },
+  getCurrentLocation: function() {
+    var contractAddress = document.getElementById('contractAddress').value;
+    var deployedFoodSafe = foodSafeContract.at(contractAddress);
+    var passPhrase = document.getElementById('passPhrase').value;
+    deployedFoodSafe.GetTrailCount.call(function (error, trailCount) {
+      deployedContract.GetLocation.call(trailCount-1,function (error, returnValues) {
+        document.getElementById("locationId").value= returnValues[1];
+        document.getElementById("locationName").value= returnValues[0];
+        var encryptedSecret = returnValues[4];
+        var decryptedSecret = CryptoJS.AES.decrypt(encryptedSecret, passPhrase).toString(CryptoJS.enc.Utf8);
+        document.getElementById('secret').value= decryptedSecret;
+      })
+    });
+    
   }
 };
 

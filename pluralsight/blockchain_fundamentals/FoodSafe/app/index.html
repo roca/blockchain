@@ -6,9 +6,18 @@
 </head>
 <body>
   <h1>FoodSafe</h1>
+ 
+ <br/><label for="contractAddress">Contract Address:</label><input id="contractAddress" placeholder="contractAddress" type="text">
+ <br/><label for="contractId">Contract Id:</label><input id="contractId" placeholder="contractId" type="text">
+ <br/><label for="contractName">Contract Name:</label><input id="contractName" placeholder="contractName" type="text">
+ <br/><label for="contractSecret">Contract Secret:</label><input id="contractSecret" placeholder="contractSecret" type="text">
+ <br/><label for="passPhrase">Pass Phrase:</label><input id="passPhrase" placeholder="passPhrase" type="text">
 
-  <br/> <label for="contractAddress"><input type="text" id="contractAddress" placeholder="Scan address or creat a new contract"/></label>
   <br/><br/>
   <button id="createContract" onclick="App.createContract()">Create New Contract</button>
+  <br/><br/>
+  <button id="addNewLocation" onclick="App.addNewLocation()">Add New Contract</button>
+  <br/><br/>
+  <button id="getCurrentLocation" onclick="App.getCurrentLocation()">Get Current Contract</button>
 </body>
 </html>
