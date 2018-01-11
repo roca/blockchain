@@ -68,6 +68,7 @@ window.App = {
         var encryptedSecret = returnValues[4];
         var decryptedSecret = CryptoJS.AES.decrypt(encryptedSecret, passPhrase).toString(CryptoJS.enc.Utf8);
         document.getElementById('secret').value= decryptedSecret;
+        //0xa1da45491b560db65b5377160cbf8b6ba6beb6b0484a98975608de54d2300ebb
       })
     });
     
