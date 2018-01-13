@@ -36,9 +36,10 @@ window.App = {
   },
   createContract: function () {
     foodSafeContract.new('', { from:account, data:foodSafeCode, gas:3000000 }, function(error, deployedContract) {
-       if(deployedContract.transactionHash) {
-         console.log(deployedContract.transactionHash)
-         document.getElementById('contractAddress').value=deployedContract.transactionHash;
+       if(deployedContract.address) {
+         console.log(deployedContract);
+         console.log(deployedContract.adress)
+         document.getElementById('contractAddress').value=deployedContract.address;
        }
     });
     
@@ -46,6 +47,7 @@ window.App = {
   addNewLocation: function () {
     var contractAddress = document.getElementById('contractAddress').value;
     var deployedFoodSafe = foodSafeContract.at(contractAddress);
+      console.log(deployedFoodSafe);
 
     var locationId = document.getElementById('locationId').value;
     var locationName = document.getElementById('locationName').value;
@@ -54,7 +56,7 @@ window.App = {
 
     var encryptedSecret= CryptoJS.AES.encrypt(locationSecret, passPhrase).toString();
     deployedFoodSafe.AddNewLocation(locationId, locationName, encryptedSecret, function(error) {
-      console.log(error);
+      //console.log(error);
     })
   },
   getCurrentLocation: function() {
