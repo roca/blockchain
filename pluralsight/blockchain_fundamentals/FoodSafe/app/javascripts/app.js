@@ -35,14 +35,34 @@ window.App = {
     });
   },
   createContract: function () {
-    foodSafeContract.new('', { from:account, data:foodSafeCode, gas:3000000 }, function(error, deployedContract) {
-       if(deployedContract.address) {
-         console.log(deployedContract);
-         console.log(deployedContract.adress)
-         document.getElementById('contractAddress').value=deployedContract.address;
-       }
-    });
-    
+    var message = document.getElementById('message');
+    message.innerText = 'attempting new contract...';
+
+    foodSafeContract.new(
+      '',
+      {
+        from: account,
+        data: foodSafeCode,
+        gas: 3000000
+      },
+      function (error, deployedContract) {
+        // The callback can be called twice - before and after mining
+        if (error) {
+          message.innerText = error;
+          return;
+        }
+
+        if (deployedContract.address) {
+          document.getElementById('contractAddress').value = deployedContract.address;
+          message.innerText = 'Contract successfully mined. Address: ' + deployedContract.address;
+          return;
+        }
+
+        document.getElementById('contractAddress').value = '';
+        console.log('deployedContract', deployedContract);
+        message.innerText = 'Contract transaction send: TransactionHash: ' + deployedContract.transactionHash + ' - waiting for mining...';
+      }
+    );    
   },
   addNewLocation: function () {
     var contractAddress = document.getElementById('contractAddress').value;
