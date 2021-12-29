@@ -26,4 +26,19 @@ contract WorkingWithVariables {
 		myUint8--;
 	}
 
+	address public myAddress;
+
+	function setMyAddress(address _myAddress) public {
+		myAddress = _myAddress;
+	}
+
+	function getBalance() public view returns (uint256) {
+		return myAddress.balance;
+	}
+
+	string public myString = 'hello world';
+
+	function setMyString(string memory _myString) public {
+		myString = _myString;
+	}
 }
