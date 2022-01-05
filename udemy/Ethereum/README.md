@@ -12,3 +12,8 @@
 - https://trufflesuite.com/ganache/
 
 Connect to http://127.0.0.1/7545 via Remix
+
+### OpenZeppelin contract library: contracts/utils/math/SafeMath.sol
+- https://github.com/OpenZeppelin/openzeppelin-contracts
+
+path: /contracts/utils/math/SafeMath.sol
