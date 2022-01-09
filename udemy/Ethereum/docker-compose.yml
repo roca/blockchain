@@ -1,0 +1,18 @@
+version: "2.4"
+
+services:
+    node:
+      container_name: node
+      build: 
+        context: .
+        dockerfile: ./Dockerfile
+      ports:
+        - "3000:3000"
+      command: 
+        - /bin/bash 
+        - -c 
+        - |
+          tail -f /dev/null
+      volumes:
+        - .:/var/project
+      working_dir: /var/project
