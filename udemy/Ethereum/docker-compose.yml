@@ -1,11 +1,16 @@
 version: "2.4"
 
 services:
+    ganache:
+      container_name: ganache
+      image: trufflesuite/ganache-core
+      ports:
+        - "8545:8545"
     node:
       container_name: node
       build: 
         context: .
-        dockerfile: ./Dockerfile
+        dockerfile: ./web3.dockerfile
       ports:
         - "3000:3000"
       command: 
