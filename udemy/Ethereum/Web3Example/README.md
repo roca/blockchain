@@ -1,5 +1,6 @@
 ```
 npm install --save web3
+npm install --save-dev hardhat
 ```
 
 
