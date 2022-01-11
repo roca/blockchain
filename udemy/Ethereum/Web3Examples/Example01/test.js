@@ -1,7 +1,7 @@
 
 // ### From Node repl:
 let Web3 = require('web3');
-let web3 = new Web3(new Web3.providers.HttpProvider("http://ganache:8545"))
+let web3 = new Web3(new Web3.providers.HttpProvider("http://ganache:8545"));
 
 // ### List accounts:
 web3.eth.getAccounts().then(console.log);
