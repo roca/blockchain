@@ -3,5 +3,6 @@
 FROM node:latest
 
 RUN npm install -g choco
+RUN npm install -g truffle
 
 CMD ["tail", "-f", "/dev/null"]
