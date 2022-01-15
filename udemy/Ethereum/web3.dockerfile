@@ -5,4 +5,6 @@ FROM node:latest
 RUN npm install -g choco
 RUN npm install -g truffle
 
+EXPOSE 9545
+
 CMD ["tail", "-f", "/dev/null"]

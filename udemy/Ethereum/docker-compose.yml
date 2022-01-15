@@ -13,6 +13,7 @@ services:
         dockerfile: ./web3.dockerfile
       ports:
         - "3000:3000"
+        - "9545:9545"
       command: 
         - /bin/bash 
         - -c 
@@ -21,3 +22,5 @@ services:
       volumes:
         - .:/var/project
       working_dir: /var/project
+      environment:
+        NODE_OPTIONS: --openssl-legacy-provider
