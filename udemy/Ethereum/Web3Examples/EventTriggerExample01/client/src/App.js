@@ -31,6 +31,7 @@ class App extends Component {
 
       // Set web3, accounts, and contract to the state, and then proceed with an
       // example of interacting with the contract's methods.
+      this.listenToPaymentEvent();
       this.setState({ loaded: true });
     } catch (error) {
       // Catch any errors for any of the above operations.
@@ -38,6 +39,8 @@ class App extends Component {
         `Failed to load web3, accounts, or contract. Check console for details.`,
       );
       console.error(error);
+      // truffle console
+      // web3.eth.sendTransaction({to: "0xced2f6E1d2d14de244C2021Af8809e99546B8010", value: 100, from: accounts[1], gas:300000});
     }
   };
 
@@ -46,6 +49,13 @@ class App extends Component {
     const value = target.type === "checkbox" ? target.checked : target.value;
     const name = target.name;
     this.setState({ [name]: value });
+  }
+
+  listenToPaymentEvent = () => {
+    //let self.
+    this.itemManager.events.SupplyChainStep().on("data", async (event) => {
+      console.log(event);
+    });
   }
 
   handleSubmit = async event => {
