@@ -40,7 +40,7 @@ class App extends Component {
       );
       console.error(error);
       // truffle console
-      // web3.eth.sendTransaction({to: "0xced2f6E1d2d14de244C2021Af8809e99546B8010", value: 100, from: accounts[1], gas:300000});
+      // web3.eth.sendTransaction({to: "0xF5798A7cceE23Cd5d50CcAD1164E1d8F25AC89E2", value: 100, from: accounts[1], gas:300000});
     }
   };
 
@@ -52,9 +52,18 @@ class App extends Component {
   }
 
   listenToPaymentEvent = () => {
-    //let self.
+    let self = this;
     this.itemManager.events.SupplyChainStep().on("data", async (event) => {
       console.log(event);
+      let itemObj = await self.itemManager.methods.items(event.returnValues._itemIndex).call();
+      console.log(itemObj);
+      if (itemObj._state == 1) {
+       alert("Item (" +  itemObj.item + "):\n" + itemObj._identifier + " was paid, deliver it now!");
+      } else if (itemObj._state == 2) {
+        alert("Item (" +  itemObj.item + "):\n" + itemObj._identifier + " was delivered, thank you!");
+      } else {
+        alert("Item (" +  itemObj.item + "):\n" + itemObj._identifier + " was created for the price of " + itemObj._itemPrice + " wei");
+      }
     });
   }
 
