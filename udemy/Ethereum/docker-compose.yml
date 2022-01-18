@@ -14,8 +14,10 @@ services:
         - "8546:8546"
         - "8547:8547"
         - "30303:30303"
+      working_dir: /var/app
       volumes:
         - ./go-ethereum:/root/.ethereum
+        - ./ex_private_network:/var/app/ex_private_network
       command:
         - /bin/sh 
         - -c 
