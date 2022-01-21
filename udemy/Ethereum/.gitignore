@@ -2,3 +2,4 @@ mysecrects.txt
 node_modules
 go-ethereum
 ex_private_network
+.env

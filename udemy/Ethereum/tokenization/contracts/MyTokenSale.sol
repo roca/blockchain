@@ -10,5 +10,5 @@ contract MyTokenSale is Crowdsale {
         address payable wallet,
         IERC20 token
     )
-        Crowdsale(rate, wallet, token) public { }
+        Crowdsale(rate, wallet, token) { }
 }
