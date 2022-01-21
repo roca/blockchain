@@ -1,5 +1,6 @@
 const MyTokenSale = artifacts.require("./MyTokenSale");
 const MyToken = artifacts.require("./MyToken");
+const MyKycContract = artifacts.require("./KycContract");
 
 const {chai, BN} = require("./setupchai");
 const expect = chai.expect;
@@ -12,6 +13,7 @@ contract("MyTokenSale Test", accounts => {
 	beforeEach(async() =>{
 		this.myTokenSale = await MyTokenSale.deployed();
 		this.myToken = await MyToken.deployed();
+		this.myKycContract = await MyKycContract.deployed();
 	});
 
 	it("should not have any tokens in my deployerAccount", async () => {
@@ -29,10 +31,17 @@ contract("MyTokenSale Test", accounts => {
 		return expect(balanceOfTokenSaleSmartContract).to.be.a.bignumber.equal(totalSupply);
 	});
 
-	it("should be possible to buy tokens", async () => {
+	it("should only be possible to buy tokens only from KYC validated accounts", async () => {
 		let tokenInstance = this.myToken;
 		let tokenSaleInstance = this.myTokenSale;
 		let balanceBefore = await tokenInstance.balanceOf(deployerAccount);
+		try {
+			await tokenSaleInstance.sendTransaction({from: deployerAccount, value: web3.utils.toWei("1", "wei")});
+		} catch (error) {
+			expect(error.reason).to.include("KYC not completed, purchases not allowed");
+		}
+		// Now complete KYC for the deployerAccount
+		await this.myKycContract.setKycCompleted(deployerAccount);
 
 		await expect(tokenSaleInstance.sendTransaction({from: deployerAccount, value: web3.utils.toWei("1", "wei")})).to.be.fulfilled;
 		return expect(tokenInstance.balanceOf(deployerAccount)).to.eventually.be.a.bignumber.equal(balanceBefore.add(new BN(1)));
