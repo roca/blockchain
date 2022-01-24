@@ -46,3 +46,10 @@ geth attach ipc:/var/app/ex_private_network/mychaindata/geth.ipc
 
 #### Crowdsales:
 - https://docs.openzeppelin.com/contracts/2.x/crowdsales
+
+
+
+
+#### Notes:
+
+- 0.000000000000000001 wei = 1 ether
