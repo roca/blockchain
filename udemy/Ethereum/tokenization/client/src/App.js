@@ -71,3 +71,5 @@ class App extends Component {
 }
 
 export default App;
+
+// web3.eth.sendTransaction({to:"SomeAccountAddress",from:accounts[0],value:web3.utils.toWei("2","ether")});
