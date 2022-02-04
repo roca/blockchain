@@ -44,12 +44,12 @@ class App extends Component {
   };
 
   updateUserTokens = async () => {
-    let userTokens = await this.tokenInstance.methods.balanceOf(this.accounts[1]).call();
+    let userTokens = await this.tokenInstance.methods.balanceOf(this.accounts[0]).call();
     this.setState({ userTokens: userTokens });
   }
 
   listenToTokenTransfer = () => {
-    this.tokenInstance.events.Transfer({to: this.accounts[1]}, (error, event) => {
+    this.tokenInstance.events.Transfer({to: this.accounts[0]}, (error, event) => {
       if (error) {
         console.log(error);
       }
@@ -58,7 +58,7 @@ class App extends Component {
   }
 
   handleBuyTokens = async () => {
-    await this.tokenSaleInstance.methods.buyTokens(this.accounts[1]).send({ from: this.accounts[1], value: this.web3.utils.toWei("1", "wei") });
+    await this.tokenSaleInstance.methods.buyTokens(this.accounts[0]).send({ from: this.accounts[0], value: this.web3.utils.toWei("1", "wei") });
   }
 
   handleInputChange = event => {
