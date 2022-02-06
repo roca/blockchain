@@ -13,8 +13,17 @@ func init() {
 func main() {
 	blockChain := blockchain.NewBlockchain()
 	blockChain.Print()
-	blockChain.CreateBlock(5, "hash 1")
+
+	blockChain.AddTransaction("A", "B", 1.0)
+
+	previousHash := blockChain.LastBlock().Hash()
+	blockChain.CreateBlock(5, previousHash)	
 	blockChain.Print()
-	blockChain.CreateBlock(2, "hash 2")
+
+	blockChain.AddTransaction("C", "D", 2.0)
+	blockChain.AddTransaction("X", "Y", 3.0)
+
+	previousHash = blockChain.LastBlock().Hash()
+	blockChain.CreateBlock(2,previousHash)
 	blockChain.Print()
 }
