@@ -1,9 +1,13 @@
 package blockchain
 
 import (
+	"crypto/ecdsa"
+	"crypto/sha256"
 	"fmt"
 	"log"
 	"strings"
+
+	"udemy.com/goblockchain/section3/wallet"
 )
 
 const (
@@ -25,9 +29,30 @@ func (bc *Blockchain) CreateBlock(nonce int, previousHash [32]byte) *Block {
 	return b
 }
 
-func (bc *Blockchain) AddTransaction(sender string, recipient string, value float32) {
-	t := NewTransaction(sender, recipient, value)
-	bc.transactionPool = append(bc.transactionPool, t)
+func (bc *Blockchain) VerifyTransactionSignature(senderPublicKey *ecdsa.PublicKey, s *wallet.Signature, t *Transaction) bool {
+	m, _ := t.MarshalJSON()
+	h := sha256.Sum256([]byte(m))
+	return ecdsa.Verify(senderPublicKey, h[:], s.R, s.S)
+}
+
+func (bc *Blockchain) AddTransaction(
+	sendersPrivateKey *ecdsa.PrivateKey, senderPublicKey *ecdsa.PublicKey, senderBlockchainAddress string,
+	recipient string,
+	value float32,
+	s *wallet.Signature) bool {
+	t := NewTransaction(sendersPrivateKey, senderPublicKey, senderBlockchainAddress, recipient, value)
+
+	if senderBlockchainAddress == MINING_SENDER {
+		bc.transactionPool = append(bc.transactionPool, t)
+		return true
+	}
+	if bc.VerifyTransactionSignature(senderPublicKey, s, t) {
+		bc.transactionPool = append(bc.transactionPool, t)
+		return true
+	} else {
+		log.Println("ERROR: Verify Transaction Signature failed")
+	}
+	return false
 }
 
 func (bc *Blockchain) ValidProof(nonce int, previousHash [32]byte, transactions []*Transaction, difficulty int) bool {
@@ -48,13 +73,34 @@ func (bc *Blockchain) ProofOfWork() int {
 	return nonce
 }
 
-func (bc *Blockchain) Mining() bool {
-	bc.AddTransaction(MINING_SENDER, bc.blockchainAddress, MINING_REWARD)
+func (bc *Blockchain) Mining(miner *wallet.Wallet) bool {
+	bc.AddTransaction(
+		miner.PrivateKey(), miner.PublicKey(), miner.BlockchainAddress(),
+		bc.blockchainAddress,
+		MINING_REWARD,
+		nil,
+	)
 	nonce := bc.ProofOfWork()
 	previousHash := bc.LastBlock().Hash()
 	bc.CreateBlock(nonce, previousHash)
 	log.Println("action=mining, status=success")
-	return  true
+	return true
+}
+
+func (bc *Blockchain) CalculateTotalAmount(blockchainAddress string) float32 {
+	var totalAmount float32 = 0.0
+	for _, block := range bc.chain {
+		for _, transaction := range block.transactions {
+			value := transaction.value
+			if blockchainAddress == transaction.recipientBlockchainAddress {
+				totalAmount += value
+			}
+			if blockchainAddress == transaction.senderBlockchainAddress {
+				totalAmount -= value
+			}
+		}
+	}
+	return totalAmount
 }
 
 func (bc *Blockchain) CopyTransactions() []*Transaction {
@@ -62,6 +108,8 @@ func (bc *Blockchain) CopyTransactions() []*Transaction {
 	for _, t := range bc.transactionPool {
 		transactions = append(transactions,
 			NewTransaction(
+				t.senderPrivateKey,
+				t.senderPublicKey,
 				t.senderBlockchainAddress,
 				t.recipientBlockchainAddress,
 				t.value,

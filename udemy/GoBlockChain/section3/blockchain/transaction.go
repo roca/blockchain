@@ -1,15 +1,29 @@
 package blockchain
 
 import (
+	"crypto/ecdsa"
+	"crypto/rand"
+	"crypto/sha256"
 	"encoding/json"
 	"fmt"
 	"strings"
+
+	"udemy.com/goblockchain/section3/wallet"
 )
 
 type Transaction struct {
+	senderPrivateKey           *ecdsa.PrivateKey
+	senderPublicKey            *ecdsa.PublicKey
 	senderBlockchainAddress    string
 	recipientBlockchainAddress string
 	value                      float32
+}
+
+func (t *Transaction) GenerateSignature() *wallet.Signature {
+	m, _ := t.MarshalJSON()
+	h := sha256.Sum256(m)
+	r, s, _ := ecdsa.Sign(rand.Reader, t.senderPrivateKey, h[:])
+	return &wallet.Signature{r, s}
 }
 
 func (t *Transaction) Print() {
@@ -25,12 +39,18 @@ func (t *Transaction) MarshalJSON() ([]byte, error) {
 		RecipientBlockchainAddress string  `json:"recipient_blockchain_address"`
 		Value                      float32 `json:"value"`
 	}{
-		SenderBlockchainAddress: t.senderBlockchainAddress,
+		SenderBlockchainAddress:    t.senderBlockchainAddress,
 		RecipientBlockchainAddress: t.recipientBlockchainAddress,
-		Value: t.value,
+		Value:                      t.value,
 	})
 }
 
-func NewTransaction(sender string, recipient string, value float32) *Transaction {
-	return &Transaction{sender, recipient, value}
+func NewTransaction(privateKey *ecdsa.PrivateKey, publicKey *ecdsa.PublicKey, sender string, recipient string, value float32) *Transaction {
+	return &Transaction{
+		senderPrivateKey:           privateKey,
+		senderPublicKey:            publicKey,
+		senderBlockchainAddress:    sender,
+		recipientBlockchainAddress: recipient,
+		value:                      value,
+	}
 }

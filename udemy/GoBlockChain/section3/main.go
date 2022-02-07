@@ -1,9 +1,11 @@
 package main
 
 import (
+	"fmt"
 	"log"
 
 	"udemy.com/goblockchain/section3/blockchain"
+	"udemy.com/goblockchain/section3/wallet"
 )
 
 func init() {
@@ -11,16 +13,19 @@ func init() {
 }
 
 func main() {
-	MinerBlockchainAddress := "miner-blockchain-address"
-	blockChain := blockchain.NewBlockchain(MinerBlockchainAddress)
-	blockChain.Print()
+	walletM := wallet.NewWallet()
+	walletA := wallet.NewWallet()
+	walletB := wallet.NewWallet()
 
-	blockChain.AddTransaction("A", "B", 1.0)
-	blockChain.Mining()
-	blockChain.Print()
+	t := blockchain.NewTransaction(
+		walletA.PrivateKey(),
+		walletA.PublicKey(),
+		walletA.BlockchainAddress(),
+		walletB.BlockchainAddress(),
+		1.0,
+	)
 
-	blockChain.AddTransaction("C", "D", 2.0)
-	blockChain.AddTransaction("X", "Y", 3.0)
-	blockChain.Mining()
-	blockChain.Print()
+	blockchain := blockchain.NewBlockchain(walletM.BlockchainAddress())
+	isAdded := blockchain.AddTransaction(walletA.PrivateKey(), walletA.PublicKey(), walletA.BlockchainAddress(), walletB.BlockchainAddress(), 1.0, t.GenerateSignature())
+	fmt.Println("Added?", isAdded)
 }
