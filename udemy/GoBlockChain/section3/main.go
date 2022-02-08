@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 
-	"udemy.com/goblockchain/section3/blockchain"
 	"udemy.com/goblockchain/section3/wallet"
 )
 
@@ -13,19 +12,11 @@ func init() {
 }
 
 func main() {
-	walletM := wallet.NewWallet()
-	walletA := wallet.NewWallet()
-	walletB := wallet.NewWallet()
+	w := wallet.NewWallet()
+	fmt.Println(w.PrivateKeyStr())
+	fmt.Println(w.PublicKeyStr())
+	fmt.Println(w.BlockchainAddress())
 
-	t := blockchain.NewTransaction(
-		walletA.PrivateKey(),
-		walletA.PublicKey(),
-		walletA.BlockchainAddress(),
-		walletB.BlockchainAddress(),
-		1.0,
-	)
-
-	blockchain := blockchain.NewBlockchain(walletM.BlockchainAddress())
-	isAdded := blockchain.AddTransaction(walletA.PrivateKey(), walletA.PublicKey(), walletA.BlockchainAddress(), walletB.BlockchainAddress(), 1.0, t.GenerateSignature())
-	fmt.Println("Added?", isAdded)
+	t := wallet.NewTransaction(w.PrivateKey(), w.PublicKey(), w.BlockchainAddress(), "B", 1.0)
+	fmt.Printf("signature %s\n", t.GenerateSignature())
 }

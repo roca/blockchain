@@ -35,24 +35,9 @@ func (bc *Blockchain) VerifyTransactionSignature(senderPublicKey *ecdsa.PublicKe
 	return ecdsa.Verify(senderPublicKey, h[:], s.R, s.S)
 }
 
-func (bc *Blockchain) AddTransaction(
-	sendersPrivateKey *ecdsa.PrivateKey, senderPublicKey *ecdsa.PublicKey, senderBlockchainAddress string,
-	recipient string,
-	value float32,
-	s *wallet.Signature) bool {
-	t := NewTransaction(sendersPrivateKey, senderPublicKey, senderBlockchainAddress, recipient, value)
-
-	if senderBlockchainAddress == MINING_SENDER {
-		bc.transactionPool = append(bc.transactionPool, t)
-		return true
-	}
-	if bc.VerifyTransactionSignature(senderPublicKey, s, t) {
-		bc.transactionPool = append(bc.transactionPool, t)
-		return true
-	} else {
-		log.Println("ERROR: Verify Transaction Signature failed")
-	}
-	return false
+func (bc *Blockchain) AddTransaction(sender string, recipient string, value float32) {
+	t := NewTransaction(sender, recipient, value)
+	bc.transactionPool = append(bc.transactionPool, t)
 }
 
 func (bc *Blockchain) ValidProof(nonce int, previousHash [32]byte, transactions []*Transaction, difficulty int) bool {
@@ -74,12 +59,7 @@ func (bc *Blockchain) ProofOfWork() int {
 }
 
 func (bc *Blockchain) Mining(miner *wallet.Wallet) bool {
-	bc.AddTransaction(
-		miner.PrivateKey(), miner.PublicKey(), miner.BlockchainAddress(),
-		bc.blockchainAddress,
-		MINING_REWARD,
-		nil,
-	)
+	bc.AddTransaction(MINING_SENDER, bc.blockchainAddress, MINING_REWARD)
 	nonce := bc.ProofOfWork()
 	previousHash := bc.LastBlock().Hash()
 	bc.CreateBlock(nonce, previousHash)
@@ -108,8 +88,6 @@ func (bc *Blockchain) CopyTransactions() []*Transaction {
 	for _, t := range bc.transactionPool {
 		transactions = append(transactions,
 			NewTransaction(
-				t.senderPrivateKey,
-				t.senderPublicKey,
 				t.senderBlockchainAddress,
 				t.recipientBlockchainAddress,
 				t.value,
