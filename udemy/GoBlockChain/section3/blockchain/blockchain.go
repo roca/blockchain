@@ -3,11 +3,12 @@ package blockchain
 import (
 	"crypto/ecdsa"
 	"crypto/sha256"
+	"encoding/json"
 	"fmt"
 	"log"
 	"strings"
 
-	"udemy.com/goblockchain/section3/wallet"
+	"udemy.com/goblockchain/section3/utils"
 )
 
 const (
@@ -29,15 +30,35 @@ func (bc *Blockchain) CreateBlock(nonce int, previousHash [32]byte) *Block {
 	return b
 }
 
-func (bc *Blockchain) VerifyTransactionSignature(senderPublicKey *ecdsa.PublicKey, s *wallet.Signature, t *Transaction) bool {
-	m, _ := t.MarshalJSON()
+func (bc *Blockchain) VerifyTransactionSignature(senderPublicKey *ecdsa.PublicKey, s *utils.Signature, t *Transaction) bool {
+	m, _ := json.Marshal(t)
 	h := sha256.Sum256([]byte(m))
 	return ecdsa.Verify(senderPublicKey, h[:], s.R, s.S)
 }
 
-func (bc *Blockchain) AddTransaction(sender string, recipient string, value float32) {
+func (bc *Blockchain) AddTransaction(sender string, recipient string, value float32,
+	senderPublicKey *ecdsa.PublicKey, senderSignature *utils.Signature) bool {
 	t := NewTransaction(sender, recipient, value)
-	bc.transactionPool = append(bc.transactionPool, t)
+
+	if sender == MINING_SENDER {
+		bc.transactionPool = append(bc.transactionPool, t)
+		return true
+	}
+
+	if bc.VerifyTransactionSignature(senderPublicKey, senderSignature, t) {
+		/*
+			//Save for later
+				if bc.CalculateTotalAmount(sender) < value {
+					log.Println("ERROR: Not enough balance in a wallet")
+					return false
+				}
+		*/
+		bc.transactionPool = append(bc.transactionPool, t)
+		return true
+	} else {
+		log.Println("ERROR: VerifyTransactionSignature failed")
+	}
+	return false
 }
 
 func (bc *Blockchain) ValidProof(nonce int, previousHash [32]byte, transactions []*Transaction, difficulty int) bool {
@@ -58,8 +79,8 @@ func (bc *Blockchain) ProofOfWork() int {
 	return nonce
 }
 
-func (bc *Blockchain) Mining(miner *wallet.Wallet) bool {
-	bc.AddTransaction(MINING_SENDER, bc.blockchainAddress, MINING_REWARD)
+func (bc *Blockchain) Mining() bool {
+	bc.AddTransaction(MINING_SENDER, bc.blockchainAddress, MINING_REWARD, nil, nil)
 	nonce := bc.ProofOfWork()
 	previousHash := bc.LastBlock().Hash()
 	bc.CreateBlock(nonce, previousHash)

@@ -15,7 +15,7 @@ type Block struct {
 }
 
 func (b *Block) Hash() [32]byte {
-	m, e := b.MarshalJSON()
+	m, e := json.Marshal(b)
 	if e != nil {
 		panic(e)
 	}
