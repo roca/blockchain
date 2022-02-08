@@ -4,7 +4,7 @@ import (
 	"flag"
 	"log"
 
-	"udemy.com/goblockchain/section3/server/blockchain_server"
+	"udemy.com/goblockchain/section3/servers/blockchain/server"
 )
 
 func init() {
@@ -14,6 +14,6 @@ func init() {
 func main() {
 	port := flag.Uint("port", 5000, "TCP Port Number for Blockchain Server")
 	flag.Parse()
-	app := blockchain_server.NewBlockchainServer(uint16(*port))
+	app := server.NewBlockchainServer(uint16(*port))
 	app.Run()
 }

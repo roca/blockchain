@@ -1,4 +1,4 @@
-package blockchain_server
+package server
 
 import (
 	"encoding/json"
