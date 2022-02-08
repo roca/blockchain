@@ -8,7 +8,7 @@ import (
 	"text/template"
 )
 
-const tempDir = "templates/"
+const tempDir = "section3/servers/wallet/server/templates/"
 
 type WalletServer struct {
 	port    uint16
@@ -26,7 +26,10 @@ func (ws *WalletServer) Gateway() string {
 func (ws *WalletServer) Index(w http.ResponseWriter, req *http.Request) {
 	switch req.Method {
 	case http.MethodGet:
-		t, _ := template.ParseFiles(path.Join(tempDir, "index.html"))
+		t, e := template.ParseFiles(path.Join(tempDir, "index.html"))
+		if e != nil {
+			log.Panicf("ERROR: %v", e)
+		}
 		t.Execute(w, nil)
 	default:
 		log.Printf("ERROR: Invalid request method: %v", req.Method)
