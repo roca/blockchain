@@ -14,6 +14,7 @@ import (
 )
 
 const tempDir = "templates/"
+const assetsDir = "assets/"
 
 type WalletServer struct {
 	port    uint16
@@ -51,8 +52,8 @@ func (ws *WalletServer) Wallet(w http.ResponseWriter, req *http.Request) {
 	case http.MethodPost:
 		w.Header().Add("Content-Type", "application/json")
 		myWallet := wallet.NewWallet()
-		m,_ := json.Marshal(myWallet)
-		_,e := io.WriteString(w, string(m[:]))
+		m, _ := json.Marshal(myWallet)
+		_, e := io.WriteString(w, string(m[:]))
 		if e != nil {
 			log.Printf("ERROR: %v", e)
 		}
@@ -65,6 +66,10 @@ func (ws *WalletServer) Wallet(w http.ResponseWriter, req *http.Request) {
 func (ws *WalletServer) Run() {
 	http.HandleFunc("/", ws.Index)
 	http.HandleFunc("/wallet", ws.Wallet)
+	_, filename, _, _ := runtime.Caller(0)
+	dir := path.Dir(filename) // Path to this file
+	http.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer( http.Dir(path.Join(dir, assetsDir)))))
+
 	log.Fatal(http.ListenAndServe("0.0.0.0:"+strconv.Itoa(int(ws.port)), nil))
 }
 
