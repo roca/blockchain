@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"text/template"
 
+	"udemy.com/goblockchain/section3/utils"
 	"udemy.com/goblockchain/section3/wallet"
 )
 
@@ -63,9 +64,25 @@ func (ws *WalletServer) Wallet(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
+func (ws *WalletServer) CreateTransaction(w http.ResponseWriter, req *http.Request) {
+	switch req.Method {
+	case http.MethodPost:
+		_, e := io.WriteString(w, string(utils.JsonStatus("Created transaction")))
+		if e != nil {
+			log.Printf("ERROR: %v", e)
+		}
+	default:
+		w.WriteHeader(http.StatusBadRequest)
+		log.Printf("ERROR: Invalid request method: %v", req.Method)
+	}
+}
+
 func (ws *WalletServer) Run() {
 	http.HandleFunc("/", ws.Index)
 	http.HandleFunc("/wallet", ws.Wallet)
+	http.HandleFunc("/transaction", ws.CreateTransaction)
+
+	// Static assets
 	_, filename, _, _ := runtime.Caller(0)
 	dir := path.Dir(filename) // Path to this file
 	http.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer( http.Dir(path.Join(dir, assetsDir)))))
