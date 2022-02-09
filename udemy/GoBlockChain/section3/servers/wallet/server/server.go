@@ -2,6 +2,7 @@ package server
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -71,6 +72,26 @@ func (ws *WalletServer) CreateTransaction(w http.ResponseWriter, req *http.Reque
 		if e != nil {
 			log.Printf("ERROR: %v", e)
 		}
+		decoder := json.NewDecoder(req.Body)
+		var t wallet.TransactionRequest
+		e = decoder.Decode(&t)
+		if e != nil {
+			log.Printf("ERROR: %v", e)
+			io.WriteString(w, string(utils.JsonStatus("Invalid transaction request")))
+			return
+		}
+		if !t.Validate() {
+			log.Println("ERROR: missing fields")
+			io.WriteString(w, string(utils.JsonStatus("Invalid transaction request")))
+			return
+		}
+
+		// fmt.Println("SenderPrivateKey:",*t.SenderPrivateKey)
+		// fmt.Println("SenderBlockchainAddress:",*t.SenderBlockchainAddress)
+		// fmt.Println("RecipientBlockchainAddress:",*t.RecipientBlockchainAddress)
+		// fmt.Println("SenderPublicKey:",*t.SenderPublicKey)
+		// fmt.Println("Value:",*t.Value)
+
 	default:
 		w.WriteHeader(http.StatusBadRequest)
 		log.Printf("ERROR: Invalid request method: %v", req.Method)
@@ -85,7 +106,7 @@ func (ws *WalletServer) Run() {
 	// Static assets
 	_, filename, _, _ := runtime.Caller(0)
 	dir := path.Dir(filename) // Path to this file
-	http.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer( http.Dir(path.Join(dir, assetsDir)))))
+	http.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir(path.Join(dir, assetsDir)))))
 
 	log.Fatal(http.ListenAndServe("0.0.0.0:"+strconv.Itoa(int(ws.port)), nil))
 }
