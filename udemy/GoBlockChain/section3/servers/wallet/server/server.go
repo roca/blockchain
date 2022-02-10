@@ -1,8 +1,8 @@
 package server
 
 import (
+	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -11,6 +11,7 @@ import (
 	"strconv"
 	"text/template"
 
+	"udemy.com/goblockchain/section3/blockchain"
 	"udemy.com/goblockchain/section3/utils"
 	"udemy.com/goblockchain/section3/wallet"
 )
@@ -68,29 +69,59 @@ func (ws *WalletServer) Wallet(w http.ResponseWriter, req *http.Request) {
 func (ws *WalletServer) CreateTransaction(w http.ResponseWriter, req *http.Request) {
 	switch req.Method {
 	case http.MethodPost:
-		_, e := io.WriteString(w, string(utils.JsonStatus("Created transaction")))
-		if e != nil {
-			log.Printf("ERROR: %v", e)
-		}
 		decoder := json.NewDecoder(req.Body)
-		var t wallet.TransactionRequest
-		e = decoder.Decode(&t)
+		var wtr wallet.TransactionRequest
+		e := decoder.Decode(&wtr)
 		if e != nil {
 			log.Printf("ERROR: %v", e)
 			io.WriteString(w, string(utils.JsonStatus("Invalid transaction request")))
 			return
 		}
-		if !t.Validate() {
+		if !wtr.Validate() {
 			log.Println("ERROR: missing fields")
-			io.WriteString(w, string(utils.JsonStatus("Invalid transaction request")))
+			io.WriteString(w, string(utils.JsonStatus("Invalid transaction request: missing fields")))
 			return
 		}
 
-		// fmt.Println("SenderPrivateKey:",*t.SenderPrivateKey)
-		// fmt.Println("SenderBlockchainAddress:",*t.SenderBlockchainAddress)
-		// fmt.Println("RecipientBlockchainAddress:",*t.RecipientBlockchainAddress)
-		// fmt.Println("SenderPublicKey:",*t.SenderPublicKey)
-		// fmt.Println("Value:",*t.Value)
+		publicKey := utils.PublicKeyFromString(*wtr.SenderPublicKey)
+		privateKey := utils.PrivateKeyFromString(*wtr.SenderPrivateKey, publicKey)
+		value, err := strconv.ParseFloat(*wtr.Value, 32)
+		if err != nil {
+			log.Printf("ERROR: %v", err)
+			io.WriteString(w, string(utils.JsonStatus("failed")))
+			return
+		}
+		value32 := float32(value)
+
+		w.Header().Add("Content-Type", "application/json")
+
+		wt := wallet.NewTransaction(
+			privateKey,
+			publicKey,
+			*wtr.SenderBlockchainAddress,
+			*wtr.RecipientBlockchainAddress,
+			value32,
+		)
+		signature := wt.GenerateSignature()
+		signatureStr := signature.String()
+
+		btr := &blockchain.TransactionRequest{
+			SenderBlockchainAddress:    wtr.SenderBlockchainAddress,
+			RecipientBlockchainAddress: wtr.RecipientBlockchainAddress,
+			SenderPublicKey:            wtr.SenderPublicKey,
+			Value:                      &value32,
+			Signature:                  &signatureStr,
+		}
+
+		m, _ := json.Marshal(btr)
+		buf := bytes.NewBuffer(m)
+
+		resp, _ := http.Post(ws.Gateway()+"/transactions", "application/json", buf)
+		if resp.StatusCode == 201 {
+			io.WriteString(w, string(utils.JsonStatus("success")))
+			return
+		}
+		io.WriteString(w, string(utils.JsonStatus("failed")))
 
 	default:
 		w.WriteHeader(http.StatusBadRequest)
