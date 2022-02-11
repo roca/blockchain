@@ -85,6 +85,7 @@ func (ws *WalletServer) CreateTransaction(w http.ResponseWriter, req *http.Reque
 
 		publicKey := utils.PublicKeyFromString(*wtr.SenderPublicKey)
 		privateKey := utils.PrivateKeyFromString(*wtr.SenderPrivateKey, publicKey)
+		// log.Printf("VALUE: %v",*wtr.Value)
 		value, err := strconv.ParseFloat(*wtr.Value, 32)
 		if err != nil {
 			log.Printf("ERROR: %v", err)

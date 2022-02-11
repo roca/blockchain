@@ -8,6 +8,7 @@ import (
 	"strconv"
 
 	"udemy.com/goblockchain/section3/blockchain"
+	"udemy.com/goblockchain/section3/utils"
 	"udemy.com/goblockchain/section3/wallet"
 )
 
@@ -47,8 +48,63 @@ func (bcs *BlockchainServer) GetChain(w http.ResponseWriter, req *http.Request) 
 
 }
 
+func (bcs *BlockchainServer) Transactions(w http.ResponseWriter, req *http.Request) {
+	switch req.Method {
+	case http.MethodGet:
+		w.Header().Add("Content-Type", "application/json")
+		bc := bcs.GetBlockchain()
+		transactions := bc.TransactionPool()
+		m, _ := json.Marshal(struct{
+			Transactions []*blockchain.Transaction `json:"transactions"`
+			Length int `json:"length"`
+		}{
+			Transactions: transactions,
+			Length: len(transactions),
+		})
+		io.WriteString(w, string(m[:]))
+	case http.MethodPost:
+		decoder := json.NewDecoder(req.Body)
+		var btr blockchain.TransactionRequest
+		e := decoder.Decode(&btr)
+		if e != nil {
+			log.Printf("ERROR: %v", e)
+			io.WriteString(w, string(utils.JsonStatus("Invalid transaction request")))
+			return
+		}
+		if !btr.Validate() {
+			log.Println("ERROR: missing fields")
+			io.WriteString(w, string(utils.JsonStatus("Invalid transaction request: missing fields")))
+			return
+		}
+		publicKey := utils.PublicKeyFromString(*btr.SenderPublicKey)
+		signature := utils.SignatureFromString(*btr.Signature)
+		bc := bcs.GetBlockchain()
+		isCreated := bc.CreateTransaction(
+			*btr.SenderBlockchainAddress, 
+			*btr.RecipientBlockchainAddress, 
+			*btr.Value, 
+			publicKey, 
+			signature)
+		w.Header().Add("Content-Type", "application/json")
+		var m []byte
+		if !isCreated {
+			w.WriteHeader(http.StatusBadRequest)
+			m = utils.JsonStatus("Transaction failed")
+		} else {
+			w.WriteHeader(http.StatusCreated)
+			m = utils.JsonStatus("Transaction created")
+		}
+		io.WriteString(w, string(m[:]))
+
+	default:
+		log.Printf("ERROR: Invalid request method: %v", req.Method)
+		w.WriteHeader(http.StatusBadRequest)
+	}
+}
+
 func (bcs *BlockchainServer) Run() {
 	http.HandleFunc("/", bcs.GetChain)
+	http.HandleFunc("/transactions", bcs.Transactions)
 	log.Fatal(http.ListenAndServe("0.0.0.0:"+strconv.Itoa(int(bcs.port)), nil))
 }
 

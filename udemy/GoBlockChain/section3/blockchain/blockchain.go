@@ -32,6 +32,10 @@ func (bc *Blockchain) MarshalJSON() ([]byte, error) {
 	})
 }
 
+func (bc *Blockchain) TransactionPool() []*Transaction {
+	return bc.transactionPool
+}
+
 func (bc *Blockchain) CreateBlock(nonce int, previousHash [32]byte) *Block {
 	b := NewBlock(nonce, previousHash, bc.transactionPool)
 	bc.chain = append(bc.chain, b)
@@ -43,6 +47,16 @@ func (bc *Blockchain) VerifyTransactionSignature(senderPublicKey *ecdsa.PublicKe
 	m, _ := json.Marshal(t)
 	h := sha256.Sum256([]byte(m))
 	return ecdsa.Verify(senderPublicKey, h[:], s.R, s.S)
+}
+
+func (bc *Blockchain) CreateTransaction(sender string, recipient string, value float32,
+	senderPublicKey *ecdsa.PublicKey, senderSignature *utils.Signature) bool {
+
+	// TODO
+	// Sync with the network
+
+	isTranacted := bc.AddTransaction(sender, recipient, value, senderPublicKey, senderSignature)
+	return isTranacted
 }
 
 func (bc *Blockchain) AddTransaction(sender string, recipient string, value float32,

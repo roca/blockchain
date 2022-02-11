@@ -33,8 +33,8 @@ $( function () {
 			contentType: 'application/json',
 			data: JSON.stringify(transaction_data),
 			success: function (response) {
-				console.info($.parseJSON(response).message);
-				if ($.parseJSON(response).message === 'failed') {
+				console.info(response);
+				if (JSON.parse(response).message === 'failed') {
 					alert("failed");
 					return
 				}
