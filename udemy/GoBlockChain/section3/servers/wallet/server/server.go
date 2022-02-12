@@ -46,7 +46,7 @@ func (ws *WalletServer) Index(w http.ResponseWriter, req *http.Request) {
 			log.Panicf("ERROR: %v", e)
 		}
 	default:
-		log.Printf("ERROR: Invalid request method: %v", req.Method)
+		log.Printf("ERROR: Invalid HTTP request method: %v", req.Method)
 	}
 }
 
@@ -62,7 +62,7 @@ func (ws *WalletServer) Wallet(w http.ResponseWriter, req *http.Request) {
 		}
 	default:
 		w.WriteHeader(http.StatusBadRequest)
-		log.Printf("ERROR: Invalid request method: %v", req.Method)
+		log.Printf("ERROR: Invalid HTTP request method: %v", req.Method)
 	}
 }
 
@@ -126,7 +126,7 @@ func (ws *WalletServer) CreateTransaction(w http.ResponseWriter, req *http.Reque
 
 	default:
 		w.WriteHeader(http.StatusBadRequest)
-		log.Printf("ERROR: Invalid request method: %v", req.Method)
+		log.Printf("ERROR: Invalid HTTP request method: %v", req.Method)
 	}
 }
 
