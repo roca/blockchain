@@ -11,16 +11,44 @@ services:
         - /bin/bash 
         - -c 
         - |
-          go run section3/servers/wallet/main.go -gateway http://blockchain_1_server:5000
+          go run section3/servers/wallet/main.go -gateway http://blockchain_server_0:5000
       volumes:
         - .:/var/project
       working_dir: /var/project
 
-    blockchain_1_server:
-      container_name: blockchain_1_server
+    blockchain_server_0:
+      container_name: blockchain_server_0
       image: golang:1.16
       ports:
         - "5000:5000"
+      command: 
+        - /bin/bash 
+        - -c 
+        - |
+          go run section3/servers/blockchain/main.go
+      volumes:
+        - .:/var/project
+      working_dir: /var/project
+
+    blockchain_server_1:
+      container_name: blockchain_server_1
+      image: golang:1.16
+      ports:
+        - "5001:5000"
+      command: 
+        - /bin/bash 
+        - -c 
+        - |
+          go run section3/servers/blockchain/main.go
+      volumes:
+        - .:/var/project
+      working_dir: /var/project
+  
+    blockchain_server_2:
+      container_name: blockchain_server_2
+      image: golang:1.16
+      ports:
+        - "5002:5000"
       command: 
         - /bin/bash 
         - -c 
