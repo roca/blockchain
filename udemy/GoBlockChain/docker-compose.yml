@@ -1,20 +1,31 @@
 version: "2.4"
 
 services:
+
     wallet_server:
       container_name: wallet_server
-      build: 
-        context: .
-        dockerfile: ./web3.dockerfile
+      image: golang:1.16
       ports:
         - "8080:8080"
       command: 
         - /bin/bash 
         - -c 
         - |
-          tail -f /dev/null
+          go run section3/servers/wallet/main.go
       volumes:
         - .:/var/project
       working_dir: /var/project
-      environment:
-        NODE_OPTIONS: --openssl-legacy-provider
+
+    blockchain_1_server:
+      container_name: blockchain_1_server
+      image: golang:1.16
+      ports:
+        - "5000:5000"
+      command: 
+        - /bin/bash 
+        - -c 
+        - |
+          go run section3/servers/blockchain/main.go
+      volumes:
+        - .:/var/project
+      working_dir: /var/project
