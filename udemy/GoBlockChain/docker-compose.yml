@@ -1,0 +1,20 @@
+version: "2.4"
+
+services:
+    wallet_server:
+      container_name: wallet_server
+      build: 
+        context: .
+        dockerfile: ./web3.dockerfile
+      ports:
+        - "8080:8080"
+      command: 
+        - /bin/bash 
+        - -c 
+        - |
+          tail -f /dev/null
+      volumes:
+        - .:/var/project
+      working_dir: /var/project
+      environment:
+        NODE_OPTIONS: --openssl-legacy-provider
