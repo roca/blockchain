@@ -11,7 +11,7 @@ services:
         - /bin/bash 
         - -c 
         - |
-          go run section3/servers/wallet/main.go --gateway http://blockchain_1_server:5000
+          go run section3/servers/wallet/main.go -gateway http://blockchain_1_server:5000
       volumes:
         - .:/var/project
       working_dir: /var/project
