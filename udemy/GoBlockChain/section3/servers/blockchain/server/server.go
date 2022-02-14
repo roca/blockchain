@@ -143,7 +143,7 @@ func (bcs *BlockchainServer) Amount(w http.ResponseWriter, req *http.Request) {
 		amount := bcs.GetBlockchain().CalculateTotalAmount(blockchainAddress)
 
 		ar := &blockchain.AmountResponse{Amount: amount}
-		m,_ := json.Marshal(ar)
+		m, _ := json.Marshal(ar)
 
 		w.Header().Add("Content-Type", "application/json")
 		io.WriteString(w, string(m[:]))
@@ -154,6 +154,8 @@ func (bcs *BlockchainServer) Amount(w http.ResponseWriter, req *http.Request) {
 }
 
 func (bcs *BlockchainServer) Run() {
+	bcs.GetBlockchain().Run()
+
 	http.HandleFunc("/", bcs.GetChain)
 	http.HandleFunc("/transactions", bcs.Transactions)
 	http.HandleFunc("/mine", bcs.Mine)

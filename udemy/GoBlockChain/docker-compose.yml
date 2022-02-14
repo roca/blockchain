@@ -34,12 +34,12 @@ services:
       container_name: blockchain_server_1
       image: golang:1.16
       ports:
-        - "5001:5000"
+        - "5001:5001"
       command: 
         - /bin/bash 
         - -c 
         - |
-          go run section3/servers/blockchain/main.go
+          go run section3/servers/blockchain/main.go -port 5001
       volumes:
         - .:/var/project
       working_dir: /var/project
@@ -48,12 +48,12 @@ services:
       container_name: blockchain_server_2
       image: golang:1.16
       ports:
-        - "5002:5000"
+        - "5002:5002"
       command: 
         - /bin/bash 
         - -c 
         - |
-          go run section3/servers/blockchain/main.go
+          go run section3/servers/blockchain/main.go -port 5002
       volumes:
         - .:/var/project
       working_dir: /var/project
