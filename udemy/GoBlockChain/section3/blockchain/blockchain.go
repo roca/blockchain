@@ -153,6 +153,23 @@ func (bc *Blockchain) AddTransaction(sender string, recipient string, value floa
 	return false
 }
 
+func (bc *Blockchain) ValidChain(chain []*Block) bool {
+	preBlock := chain[0]
+	currentIndex := 1
+	for currentIndex < len(chain) {
+		b := chain[currentIndex]
+		if b.PreviousHash() != preBlock.Hash() {
+			return false
+		}
+		if !bc.ValidProof(b.Nonce(), b.PreviousHash(), b.Transactions(), MINING_DIFFICULTY) {
+			return false
+		}
+		preBlock = b
+		currentIndex += 1
+	}
+	return true
+}
+
 func (bc *Blockchain) ValidProof(nonce int, previousHash [32]byte, transactions []*Transaction, difficulty int) bool {
 	zeros := strings.Repeat("0", difficulty)
 	guessBlock := Block{nonce: nonce, previousHash: previousHash, timestamp: 0, transactions: transactions}
