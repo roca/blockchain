@@ -5,7 +5,6 @@ import (
 	"net"
 	"os"
 	"regexp"
-	"strconv"
 	"time"
 )
 
@@ -41,7 +40,8 @@ func FindNeighbors(
 		return nil
 	}
 	prefixHost := m[1]
-	lastIp, _ := strconv.Atoi(m[len(m)-1])
+	//lastIp, _ := strconv.Atoi(m[len(m)-1])
+	lastIp := 2 // First Docker container IP
 
 	neighbors := make([]string, 0)
 

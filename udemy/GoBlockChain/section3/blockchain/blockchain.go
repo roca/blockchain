@@ -50,7 +50,7 @@ func (bc *Blockchain) SetNeighbors() {
 		NEIGHBOR_IP_RANGE_START, NEIGHBOR_IP_RANGE_END,
 		BLOCKCHAIN_PORT_RANGE_START, BLOCKCHAIN_PORT_RANGE_END,
 	)
-	log.Printf("%v", bc.neighbors)
+	log.Printf("NEIGHBORS: %v", bc.neighbors)
 }
 
 func (bc *Blockchain) SyncNeighbors() {
