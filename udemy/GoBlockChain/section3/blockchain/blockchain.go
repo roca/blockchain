@@ -22,7 +22,7 @@ const (
 	BLOCKCHAIN_PORT_RANGE_START       = 5000
 	BLOCKCHAIN_PORT_RANGE_END         = 5003
 	NEIGHBOR_IP_RANGE_START           = 0
-	NEIGHBOR_IP_RANGE_END             = 5
+	NEIGHBOR_IP_RANGE_END             = 10
 	BLOCKCHAIN_NEIGHBOR_SYNC_TIME_SEC = 20
 )
 
@@ -44,7 +44,7 @@ func (bc *Blockchain) Run() {
 
 func (bc *Blockchain) SetNeighbors() {
 	bc.neighbors = utils.FindNeighbors(
-		utils.GetHost(), bc.port,
+		utils.GetHost(), int(bc.port),
 		NEIGHBOR_IP_RANGE_START, NEIGHBOR_IP_RANGE_END,
 		BLOCKCHAIN_PORT_RANGE_START, BLOCKCHAIN_PORT_RANGE_END,
 	)

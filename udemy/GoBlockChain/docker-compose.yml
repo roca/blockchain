@@ -11,10 +11,13 @@ services:
         - /bin/bash 
         - -c 
         - |
-          go run section3/servers/wallet/main.go -gateway http://blockchain_server_0:5000
+          go run section3/servers/wallet/main.go -port 8080 -gateway http://blockchain_server_0:5000
       volumes:
         - .:/var/project
       working_dir: /var/project
+      environment:
+        - PORT=8080
+        - GATEWAY=http://blockchain_server_0:5000
 
     blockchain_server_0:
       container_name: blockchain_server_0
@@ -25,10 +28,12 @@ services:
         - /bin/bash 
         - -c 
         - |
-          go run section3/servers/blockchain/main.go
+          go run section3/servers/blockchain/main.go -port 5000
       volumes:
         - .:/var/project
       working_dir: /var/project
+      environment:
+        - PORT=5000
 
     blockchain_server_1:
       container_name: blockchain_server_1
@@ -43,6 +48,8 @@ services:
       volumes:
         - .:/var/project
       working_dir: /var/project
+      environment:
+        - PORT=5001
   
     blockchain_server_2:
       container_name: blockchain_server_2
@@ -57,3 +64,21 @@ services:
       volumes:
         - .:/var/project
       working_dir: /var/project
+      environment:
+        - PORT=5002
+
+    blockchain_server_3:
+      container_name: blockchain_server_3
+      image: golang:1.16
+      ports:
+        - "5003:5003"
+      command: 
+        - /bin/bash 
+        - -c 
+        - |
+          go run section3/servers/blockchain/main.go -port 5003
+      volumes:
+        - .:/var/project
+      working_dir: /var/project
+      environment:
+        - PORT=5003
