@@ -94,7 +94,42 @@ func (bcs *BlockchainServer) Transactions(w http.ResponseWriter, req *http.Reque
 			m = utils.JsonStatus("Transaction created")
 		}
 		io.WriteString(w, string(m[:]))
-
+	case http.MethodPut:
+		decoder := json.NewDecoder(req.Body)
+		var btr blockchain.TransactionRequest
+		e := decoder.Decode(&btr)
+		if e != nil {
+			log.Printf("ERROR: %v", e)
+			io.WriteString(w, string(utils.JsonStatus("Invalid transaction request")))
+			return
+		}
+		if !btr.Validate() {
+			log.Println("ERROR: missing fields")
+			io.WriteString(w, string(utils.JsonStatus("Invalid transaction request: missing fields")))
+			return
+		}
+		publicKey := utils.PublicKeyFromString(*btr.SenderPublicKey)
+		signature := utils.SignatureFromString(*btr.Signature)
+		bc := bcs.GetBlockchain()
+		isUpdated := bc.AddTransaction(
+			*btr.SenderBlockchainAddress,
+			*btr.RecipientBlockchainAddress,
+			*btr.Value,
+			publicKey,
+			signature)
+		w.Header().Add("Content-Type", "application/json")
+		var m []byte
+		if !isUpdated {
+			w.WriteHeader(http.StatusBadRequest)
+			m = utils.JsonStatus("Transaction failed")
+		} else {
+			m = utils.JsonStatus("Transaction created")
+		}
+		io.WriteString(w, string(m[:]))
+	case http.MethodDelete:
+		bc := bcs.GetBlockchain()
+		bc.ClearTransactionPool()
+		io.WriteString(w,string(utils.JsonStatus("Transaction pool cleared")))
 	default:
 		log.Printf("ERROR: Invalid HTTP request method: %v", req.Method)
 		w.WriteHeader(http.StatusBadRequest)

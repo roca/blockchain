@@ -1,11 +1,13 @@
 package blockchain
 
 import (
+	"bytes"
 	"crypto/ecdsa"
 	"crypto/sha256"
 	"encoding/json"
 	"fmt"
 	"log"
+	"net/http"
 	"strings"
 	"sync"
 	"time"
@@ -22,7 +24,7 @@ const (
 	BLOCKCHAIN_PORT_RANGE_START       = 5000
 	BLOCKCHAIN_PORT_RANGE_END         = 5003
 	NEIGHBOR_IP_RANGE_START           = 0
-	NEIGHBOR_IP_RANGE_END             = 10
+	NEIGHBOR_IP_RANGE_END             = 5
 	BLOCKCHAIN_NEIGHBOR_SYNC_TIME_SEC = 20
 )
 
@@ -44,7 +46,7 @@ func (bc *Blockchain) Run() {
 
 func (bc *Blockchain) SetNeighbors() {
 	bc.neighbors = utils.FindNeighbors(
-		utils.GetHost(), int(bc.port),
+		utils.GetHost(), bc.port,
 		NEIGHBOR_IP_RANGE_START, NEIGHBOR_IP_RANGE_END,
 		BLOCKCHAIN_PORT_RANGE_START, BLOCKCHAIN_PORT_RANGE_END,
 	)
@@ -74,10 +76,21 @@ func (bc *Blockchain) TransactionPool() []*Transaction {
 	return bc.transactionPool
 }
 
+func (bc *Blockchain) ClearTransactionPool() {
+	bc.transactionPool = bc.transactionPool[:0]
+}
+
 func (bc *Blockchain) CreateBlock(nonce int, previousHash [32]byte) *Block {
 	b := NewBlock(nonce, previousHash, bc.transactionPool)
 	bc.chain = append(bc.chain, b)
 	bc.transactionPool = []*Transaction{}
+	for _, n := range bc.neighbors {
+		endpoint := fmt.Sprintf("http://%s/transactions", n)
+		client := &http.Client{}
+		req, _ := http.NewRequest("DELETE", endpoint, nil)
+		resp, _ := client.Do(req)
+		log.Printf("%v", resp)
+	}
 	return b
 }
 
@@ -89,11 +102,29 @@ func (bc *Blockchain) VerifyTransactionSignature(senderPublicKey *ecdsa.PublicKe
 
 func (bc *Blockchain) CreateTransaction(sender string, recipient string, value float32,
 	senderPublicKey *ecdsa.PublicKey, senderSignature *utils.Signature) bool {
-
-	// TODO
-	// Sync with the network
-
 	isTranacted := bc.AddTransaction(sender, recipient, value, senderPublicKey, senderSignature)
+
+	if isTranacted {
+		for _, n := range bc.neighbors {
+			publicKeyStr := fmt.Sprintf("%064x%064x", senderPublicKey.X.Bytes(), senderPublicKey.Y.Bytes())
+			signatureStr := senderSignature.String()
+			tr := &TransactionRequest{
+				SenderBlockchainAddress:    &sender,
+				RecipientBlockchainAddress: &recipient,
+				SenderPublicKey:            &publicKeyStr,
+				Value:                      &value,
+				Signature:                  &signatureStr,
+			}
+			m, _ := json.Marshal(tr)
+			buf := bytes.NewBuffer(m)
+			endpoint := fmt.Sprintf("http://%s/transactions", n)
+			log.Println("Sending transaction to", n, ":", endpoint)
+			client := &http.Client{}
+			req, _ := http.NewRequest("PUT", endpoint, buf)
+			resp, _ := client.Do(req)
+			log.Printf("%v", resp)
+		}
+	}
 	return isTranacted
 }
 
