@@ -129,7 +129,7 @@ func (bcs *BlockchainServer) Transactions(w http.ResponseWriter, req *http.Reque
 	case http.MethodDelete:
 		bc := bcs.GetBlockchain()
 		bc.ClearTransactionPool()
-		io.WriteString(w,string(utils.JsonStatus("Transaction pool cleared")))
+		io.WriteString(w, string(utils.JsonStatus("Transaction pool cleared")))
 	default:
 		log.Printf("ERROR: Invalid HTTP request method: %v", req.Method)
 		w.WriteHeader(http.StatusBadRequest)
@@ -188,6 +188,24 @@ func (bcs *BlockchainServer) Amount(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
+func (bcs *BlockchainServer) Consensus(w http.ResponseWriter, req *http.Request) {
+	switch req.Method {
+	case http.MethodPut:
+		bc := bcs.GetBlockchain()
+		replaced := bc.ResolveConflicts()
+
+		w.Header().Add("Content-Type", "application/json")
+		if replaced {
+			io.WriteString(w, string(utils.JsonStatus("Successfully reached consensus")))
+		} else {
+			io.WriteString(w, string(utils.JsonStatus("Failed to reach consensus")))
+		}
+	default:
+		log.Printf("ERROR: Invalid HTTP request method: %v", req.Method)
+		w.WriteHeader(http.StatusBadRequest)
+	}
+}
+
 func (bcs *BlockchainServer) Run() {
 	bcs.GetBlockchain().Run()
 
@@ -196,6 +214,7 @@ func (bcs *BlockchainServer) Run() {
 	http.HandleFunc("/mine", bcs.Mine)
 	http.HandleFunc("/mine/start", bcs.StartMining)
 	http.HandleFunc("/amount", bcs.Amount)
+	http.HandleFunc("/consensus", bcs.Consensus)
 	log.Fatal(http.ListenAndServe("0.0.0.0:"+strconv.Itoa(int(bcs.port)), nil))
 }
 

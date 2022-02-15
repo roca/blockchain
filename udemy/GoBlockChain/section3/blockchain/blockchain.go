@@ -39,9 +39,13 @@ type Blockchain struct {
 	muxNeighbors sync.Mutex
 }
 
+func (bc *Blockchain) Chain() []*Block {
+	return bc.chain
+}
+
 func (bc *Blockchain) Run() {
-	//bc.StartMining()
 	bc.StartSyncNeighbors()
+	bc.ResolveConflicts()
 }
 
 func (bc *Blockchain) SetNeighbors() {
@@ -66,10 +70,23 @@ func (bc *Blockchain) StartSyncNeighbors() {
 
 func (bc *Blockchain) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
-		Blocks []*Block `json:"chains`
+		Blocks []*Block `json:"chain"`
 	}{
 		Blocks: bc.chain,
 	})
+}
+
+func (bc *Blockchain) UnmarshalJSON(data []byte) error {
+	v := &struct {
+		Blocks *[]*Block `json:"chain"`
+	}{
+		Blocks: &bc.chain,
+	}
+
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (bc *Blockchain) TransactionPool() []*Transaction {
@@ -170,6 +187,36 @@ func (bc *Blockchain) ValidChain(chain []*Block) bool {
 	return true
 }
 
+func (bc *Blockchain) ResolveConflicts() bool {
+	var longestChain []*Block = nil
+	maxLength := len(bc.chain)
+
+	for _, n := range bc.neighbors {
+		endpoint := fmt.Sprintf("http://%s/chain", n)
+		resp, _ := http.Get(endpoint)
+		if resp.StatusCode == 200 {
+			var bcResp Blockchain
+			decoder := json.NewDecoder(resp.Body)
+			_ = decoder.Decode(&bcResp)
+
+			chain := bcResp.Chain()
+
+			if len(chain) > maxLength && bc.ValidChain(chain) {
+				maxLength = len(chain)
+				longestChain = chain
+			}
+		}
+	}
+
+	if longestChain != nil {
+		bc.chain = longestChain
+		log.Println("Resolve conflicts replaced chain with longest chain")
+		return true
+	}
+	log.Println("Resolve conflicts failed, nothing changed")
+	return false
+}
+
 func (bc *Blockchain) ValidProof(nonce int, previousHash [32]byte, transactions []*Transaction, difficulty int) bool {
 	zeros := strings.Repeat("0", difficulty)
 	guessBlock := Block{nonce: nonce, previousHash: previousHash, timestamp: 0, transactions: transactions}
@@ -201,6 +248,14 @@ func (bc *Blockchain) Mining() bool {
 	previousHash := bc.LastBlock().Hash()
 	bc.CreateBlock(nonce, previousHash)
 	log.Println("action=mining, status=success")
+
+	for _, n := range bc.neighbors {
+		endpoint := fmt.Sprintf("http://%s/consensus", n)
+		client := &http.Client{}
+		req, _ := http.NewRequest("PUT", endpoint, nil)
+		resp, _ := client.Do(req)
+		log.Printf("%v", resp)
+	}
 	return true
 }
 
