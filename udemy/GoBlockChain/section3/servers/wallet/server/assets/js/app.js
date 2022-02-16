@@ -65,11 +65,12 @@ $( function () {
 		});
 	}
 
-	
+	/*
 	$('#reload_wallet').click(function () {
 		reload_amount();
 	});
+	*/
 	
 
-	// setInterval(reload_amount, 3000);
+	setInterval(reload_amount, 3000);
 })

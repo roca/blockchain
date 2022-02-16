@@ -2,23 +2,6 @@ version: "2.4"
 
 services:
 
-    wallet_server:
-      container_name: wallet_server
-      image: golang:1.16
-      ports:
-        - "8080:8080"
-      command: 
-        - /bin/bash 
-        - -c 
-        - |
-          go run section3/servers/wallet/main.go -port 8080 -gateway http://blockchain_server_0:5000
-      volumes:
-        - .:/var/project
-      working_dir: /var/project
-      environment:
-        - PORT=8080
-        - GATEWAY=http://blockchain_server_0:5000
-
     blockchain_server_0:
       container_name: blockchain_server_0
       image: golang:1.16
@@ -82,3 +65,41 @@ services:
       working_dir: /var/project
       environment:
         - PORT=5003
+
+    wallet_server_A:
+      container_name: wallet_server_A
+      depends_on:
+        - blockchain_server_0
+      image: golang:1.16
+      ports:
+        - "8080:8080"
+      command: 
+        - /bin/bash 
+        - -c 
+        - |
+          go run section3/servers/wallet/main.go -port 8080 -gateway http://blockchain_server_0:5000
+      volumes:
+        - .:/var/project
+      working_dir: /var/project
+      environment:
+        - PORT=8080
+        - GATEWAY=http://blockchain_server_0:5000
+
+    wallet_server_B:
+      container_name: wallet_server_B
+      depends_on:
+        - blockchain_server_1
+      image: golang:1.16
+      ports:
+        - "8081:8081"
+      command: 
+        - /bin/bash 
+        - -c 
+        - |
+          go run section3/servers/wallet/main.go -port 8081 -gateway http://blockchain_server_0:5001
+      volumes:
+        - .:/var/project
+      working_dir: /var/project
+      environment:
+        - PORT=8080
+        - GATEWAY=http://blockchain_server_0:5001
