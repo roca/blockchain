@@ -34,7 +34,7 @@ $( function () {
 			data: JSON.stringify(transaction_data),
 			success: function (response) {
 				console.info(response);
-				if (JSON.parse(response).message === 'failed') {
+				if (response.message === 'failed') {
 					alert("failed");
 					return
 				}

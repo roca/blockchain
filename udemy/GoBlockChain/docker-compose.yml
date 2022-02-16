@@ -96,10 +96,10 @@ services:
         - /bin/bash 
         - -c 
         - |
-          go run section3/servers/wallet/main.go -port 8081 -gateway http://blockchain_server_0:5001
+          go run section3/servers/wallet/main.go -port 8081 -gateway http://blockchain_server_1:5001
       volumes:
         - .:/var/project
       working_dir: /var/project
       environment:
-        - PORT=8080
-        - GATEWAY=http://blockchain_server_0:5001
+        - PORT=8081
+        - GATEWAY=http://blockchain_server_1:5001
