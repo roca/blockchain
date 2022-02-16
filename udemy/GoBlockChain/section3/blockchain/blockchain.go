@@ -113,9 +113,18 @@ func (bc *Blockchain) CreateBlock(nonce int, previousHash [32]byte) *Block {
 }
 
 func (bc *Blockchain) VerifyTransactionSignature(senderPublicKey *ecdsa.PublicKey, s *utils.Signature, t *Transaction) bool {
-	m, _ := json.Marshal(t)
+	m, e := json.Marshal(t)
+	if e != nil {
+		log.Println("ERROR: json.Marshal failed")
+		return false
+	}
+	log.Println("**************** VerifyTransactionSignature")
+	t.Print()
+	log.Println("Signature:", s.String())
 	h := sha256.Sum256([]byte(m))
-	return ecdsa.Verify(senderPublicKey, h[:], s.R, s.S)
+	valid := ecdsa.Verify(senderPublicKey, h[:], s.R, s.S)
+	log.Println("Signature Valid:", valid)
+	return valid
 }
 
 func (bc *Blockchain) CreateTransaction(sender string, recipient string, value float32,

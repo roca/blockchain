@@ -5,6 +5,7 @@ import (
 	"crypto/rand"
 	"crypto/sha256"
 	"encoding/json"
+	"log"
 
 	"udemy.com/goblockchain/section3/utils"
 )
@@ -19,8 +20,12 @@ type Transaction struct {
 
 func (t *Transaction) GenerateSignature() *utils.Signature {
 	m, _ := json.Marshal(t)
-	h := sha256.Sum256(m)
-	r, s, _ := ecdsa.Sign(rand.Reader, t.senderPrivateKey, h[:])
+	h := sha256.Sum256([]byte(m))
+	r, s, e := ecdsa.Sign(rand.Reader, t.senderPrivateKey, h[:])
+	if e != nil {
+		log.Println("Error Generating Transaction Signature:", e)
+		return nil
+	}
 	return &utils.Signature{r, s}
 }
 
@@ -41,19 +46,19 @@ func NewTransaction(privateKey *ecdsa.PrivateKey, publicKey *ecdsa.PublicKey, se
 }
 
 type TransactionRequest struct {
-	SenderPrivateKey *string `json:"sender_private_key"`
-	SenderBlockchainAddress *string `json:"sender_blockchain_address"`
+	SenderPrivateKey           *string `json:"sender_private_key"`
+	SenderBlockchainAddress    *string `json:"sender_blockchain_address"`
 	RecipientBlockchainAddress *string `json:"recipient_blockchain_address"`
-	SenderPublicKey *string `json:"sender_public_key"`
-	Value *string `json:"value"`
+	SenderPublicKey            *string `json:"sender_public_key"`
+	Value                      *string `json:"value"`
 }
 
-func (tr *TransactionRequest) Validate() bool{
+func (tr *TransactionRequest) Validate() bool {
 	if tr.SenderPrivateKey == nil ||
-	tr.SenderBlockchainAddress == nil ||
-	tr.RecipientBlockchainAddress == nil ||
-	tr.SenderPublicKey == nil ||
-	tr.Value == nil {
+		tr.SenderBlockchainAddress == nil ||
+		tr.RecipientBlockchainAddress == nil ||
+		tr.SenderPublicKey == nil ||
+		tr.Value == nil {
 		return false
 	}
 	return true
