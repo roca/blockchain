@@ -23,7 +23,7 @@ func (w *Wallet) PrivateKey() *ecdsa.PrivateKey {
 }
 
 func (w *Wallet) PrivateKeyStr() string {
-	return fmt.Sprintf("%064x", w.privateKey.D.Bytes())
+	return fmt.Sprintf("%x", w.privateKey.D.Bytes())
 }
 
 func (w *Wallet) PublicKey() *ecdsa.PublicKey {
