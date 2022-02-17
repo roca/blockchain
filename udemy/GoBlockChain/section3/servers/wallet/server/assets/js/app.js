@@ -74,9 +74,3 @@ $( function () {
 
 	setInterval(reload_amount, 3000);
 })
-/*
-blockchain_server_0    | Blockchain Server:2022/02/17 01:44:21 private_key 6c9802fc269490930210850bcaafec1c346d11f90d2018a91a2b48c2896a9e7a
-blockchain_server_0    | Blockchain Server:2022/02/17 01:44:21 public_key f6d101757a1ca9776ae1385efa118bc6322c4392c155d63114206a76249bc9c03e8d1569283cc002508761fc66af334bdb884e7f173f6436219dab108f0fa2f0
-blockchain_server_0    | Blockchain Server:2022/02/17 01:44:21 blockchain_address 1CMzGxmFXRjwjgfUnXq51RtC6kxRv4S6mZ
-blockchain_server_0    | HOSTNAME: 8151c95ed4f9
-*/
