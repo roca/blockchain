@@ -74,3 +74,11 @@ $( function () {
 
 	setInterval(reload_amount, 3000);
 })
+
+/*
+blockchain_server_0  | Blockchain Server:2022/02/17 14:58:08 private_key 0a8b595a05680ee3f29a41d387bd79a114ce62ca9b902b58aca71289822ef72d
+blockchain_server_0  | Blockchain Server:2022/02/17 14:58:08 public_key 7fbf72bb3806d731fb8f201a56931704283502d2a8b3d6918f2d163becf7c10901fea15d6787aa6bef39a22804448326dac4d9fabc11aeb99807e9334f18ae8d
+blockchain_server_2  | Blockchain Server:2022/02/17 14:58:08 Resolve conflicts replaced chain with longest chain
+blockchain_server_0  | Blockchain Server:2022/02/17 14:58:08 blockchain_address 1MpF84ZHxjKvQddHfQ6qWwrUnT4QTdo5XP
+blockchain_server_0  | HOSTNAME: 61b29b57636a
+*/
