@@ -5,3 +5,19 @@
 ```
 brew install vagrant
 ```
+
+
+#### Some commands instide the vargant sheel:
+```
+dev-init.sh
+dev-validate.sh "Installs some chaine code"
+dev-start.sh 
+dev-stop.sh 
+
+dev-validate.sh skip
+dev-mode.sh 
+
+dev-init.sh -e
+exp-stop.sh
+exp-start.sh
+```
