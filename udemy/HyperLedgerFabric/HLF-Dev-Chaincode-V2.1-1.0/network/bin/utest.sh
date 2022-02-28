@@ -6,7 +6,7 @@
 # set -e
 
 # This is so we can use the functions in chain.sh
-source chain.sh  &> /dev/null
+# source chain.sh  &> /dev/null
 
 # Used for console printling
 FAILED_SYMBOL='\U274C   Failed:'
@@ -28,8 +28,8 @@ function  chain_install {
     print_utest_info  "Installing..."
     # 2.0 change
     # peer chaincode install -l "$CC_LANGUAGE" -n "$CC_NAME" -p "$CC_PATH" -v "$CC_VERSION"
-    # chain.sh install -p
-    cc_pinstall
+    chain.sh install -p
+    # cc_pinstall
     INSTALL_RESULT=$?
 
     # update the package-id
@@ -46,8 +46,8 @@ function  chain_instantiate {
     print_utest_info  "Instantiating..."
     # 2.0 change
     # peer chaincode instantiate -C "$CC_CHANNEL_ID" -n "$CC_NAME" -v "$CC_VERSION" -c "$CC_CONSTRUCTOR"  -o "$ORDERER_ADDRESS" -l "$CC_LANGUAGE"
-    # chain.sh instantiate
-    cc_instantiate
+    chain.sh instantiate
+    # cc_instantiate
 
     INSTALL_RESULT=$?
     # wait for some time

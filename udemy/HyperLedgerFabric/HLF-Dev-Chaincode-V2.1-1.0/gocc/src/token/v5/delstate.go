@@ -1,4 +1,4 @@
-package		main
+package main
 
 // Solution for the exercise
 import (

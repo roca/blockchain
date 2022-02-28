@@ -52,7 +52,12 @@ func (token *TokenChaincode) Invoke(stub shim.ChaincodeStubInterface) peer.Respo
 		// Gets the value
 		return GetToken(stub)
 
-	} 
+	} else if(funcName == "delete"){
+
+		// Delete the value
+		return DeleteToken(stub)
+
+	}  
 	
 	
 	// This is not good

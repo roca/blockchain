@@ -1,13 +1,13 @@
-# Generated: Fri Feb 25 10:08:48 UTC 2022
+# Generated: Mon Feb 28 18:24:33 UTC 2022
 export CC_LANGUAGE=golang
-export CC_PATH=token/v4
-export CC_NAME=token
+export CC_PATH=testing/cctest
+export CC_NAME=cctest
 export CC_VERSION=1.0
 export CC_CHANNEL_ID=airlinechannel
 export CC_CONSTRUCTOR='{"Args":["init","a","100","b","300"]}'
 export CC_QUERY_ARGS='{"Args":["query","b"]}'
-export CC_INVOKE_ARGS='{"args":["func-name","param-1","param-2"]}'
-export CORE_CHAINCODE_ID_NAME='token'
+export CC_INVOKE_ARGS='{"Args":["invoke","a","b","5"]}'
+export CORE_CHAINCODE_ID_NAME='cctest'
 export CORE_CHAINCODE_LOGGING_LEVEL=''
 export CORE_CHAINCODE_LOGGING_SHIM=''
 export CC_PRIVATE_DATA_JSON=''
