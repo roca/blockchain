@@ -21,3 +21,7 @@ dev-init.sh -e
 exp-stop.sh
 exp-start.sh
 ```
+
+
+## Testing:
+- https://pkg.go.dev/github.com/hyperledger/fabric/core/chaincode/shim?utm_source=godoc#MockStub
