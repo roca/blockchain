@@ -43,7 +43,7 @@ func (clientdid *CidChaincode) Invoke(stub shim.ChaincodeStubInterface) peer.Res
 
 	} else if funcName == "ApproveTrade" {
 		// To be coded in an exercise
-		// return clientdid.ApproveTrade(stub, args)
+		return clientdid.ApproveTrade(stub, args)
 	}
 
 	return shim.Error("Bad Func Name!!!")

@@ -1,0 +1,31 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "dNyag3cULsFr1S33kMYKXYt25WY=",
+			"path": "github.com/hyperledger/fabric-chaincode-go/shim",
+			"revision": "2584993c3b5ef5cd032c0355455c57d25db7b7b3",
+			"revisionTime": "2020-03-29T19:53:19Z"
+		},
+		{
+			"checksumSHA1": "CZokxRSD044daMQKL0rjHu+eacY=",
+			"path": "github.com/hyperledger/fabric-chaincode-go/shim/internal",
+			"revision": "2584993c3b5ef5cd032c0355455c57d25db7b7b3",
+			"revisionTime": "2020-03-29T19:53:19Z"
+		},
+		{
+			"checksumSHA1": "3CPKTFFXjr6qM1a5/UsPgKhg/g8=",
+			"path": "github.com/hyperledger/fabric-protos-go/ledger/queryresult",
+			"revision": "cfe579e86986db6429dc795c52379120b5814a1d",
+			"revisionTime": "2020-03-30T07:47:07Z"
+		},
+		{
+			"checksumSHA1": "Pw2F6LlXYIDGv+NFfNvt9uUckx4=",
+			"path": "github.com/hyperledger/fabric-protos-go/peer",
+			"revision": "cfe579e86986db6429dc795c52379120b5814a1d",
+			"revisionTime": "2020-03-30T07:47:07Z"
+		}
+	],
+	"rootPath": "token/history"
+}

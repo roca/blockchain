@@ -3,7 +3,6 @@ package main
 /**
  * v1 shows the use of Range functions
  **/
-
 import (
 	// For printing messages on console
 	"fmt"

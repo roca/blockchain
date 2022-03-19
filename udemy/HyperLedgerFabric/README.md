@@ -25,3 +25,10 @@ exp-start.sh
 
 ## Testing:
 - https://pkg.go.dev/github.com/hyperledger/fabric/core/chaincode/shim?utm_source=godoc#MockStub
+
+
+## Test X509 Certs 
+- https://certlogik.com/decoder/
+
+# Frabric node sdk (1.4):
+- https://hyperledger.github.io/fabric-sdk-node/release-1.4/module-fabric-network.html
