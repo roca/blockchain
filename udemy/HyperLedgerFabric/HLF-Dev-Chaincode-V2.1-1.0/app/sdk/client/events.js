@@ -1,6 +1,6 @@
 /**
  * Demonstrates the use of ChannelEventHub for
- * (a) Block events (b) Chaincode events
+ * (a) Block events (b) Chaincode eventns
  */
 const fs = require('fs');
 const Client = require('fabric-client');
@@ -12,7 +12,7 @@ const ACME_CLIENT_CONNECTION_PROFILE_PATH = '../profiles/acme-client.yaml'
 
 // Org & User
 const ORG_NAME = 'acme'
-const USER_NAME = 'Admin'   
+const USER_NAME = 'admin'   
 const PEER_NAME = 'acme-peer1.acme.com'
 const CHANNEL_NAME = 'airlinechannel'
 

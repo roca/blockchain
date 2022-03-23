@@ -1,4 +1,4 @@
-# Generated: Fri Mar 18 13:50:53 UTC 2022
+# Generated: Wed Mar 23 13:30:31 UTC 2022
 export CC_LANGUAGE=golang
 export CC_PATH=token/ERC20
 export CC_NAME=erc20
@@ -6,7 +6,7 @@ export CC_VERSION=1.0
 export CC_CHANNEL_ID=airlinechannel
 export CC_CONSTRUCTOR='{"Args":["init","ACFT","1000", "A Cloud Fan Token!!!","john"]}'
 export CC_QUERY_ARGS='{"Args":["balanceOf","john"]}'
-export CC_INVOKE_ARGS='{"Args":["invoke","a","b","5"]}'
+export CC_INVOKE_ARGS='{"Args":["transfer", "john", "sam", "10"]}'
 export CORE_CHAINCODE_ID_NAME='erc20'
 export CORE_CHAINCODE_LOGGING_LEVEL=''
 export CORE_CHAINCODE_LOGGING_SHIM=''

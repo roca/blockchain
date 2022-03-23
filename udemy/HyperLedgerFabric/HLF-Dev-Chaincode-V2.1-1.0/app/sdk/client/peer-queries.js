@@ -14,7 +14,7 @@ const BUDGET_CLIENT_CONNECTION_PROFILE_PATH = '../profiles/budget-client.yaml'
 
 // Org & User
 const ORG_NAME = 'acme'
-const USER_NAME = 'Admin'   // Non admin identity will lead to 'access denied' try User1
+const USER_NAME = 'admin'   // Non admin identity will lead to 'access denied' try User1
 const PEER_NAME = 'acme-peer1.acme.com'
 
 // Variable to hold the client

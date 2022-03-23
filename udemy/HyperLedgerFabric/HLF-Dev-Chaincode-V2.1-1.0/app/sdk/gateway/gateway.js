@@ -48,9 +48,9 @@ async function main() {
     await queryContract(contract)
 
     // 7. Execute the transaction
-    await submitTxnContract(contract)
-    // Must give delay or use await here otherwise Error=MVCC_READ_CONFLICT
     // await submitTxnContract(contract)
+    // Must give delay or use await here otherwise Error=MVCC_READ_CONFLICT
+    await submitTxnContract(contract)
 
 }
 
@@ -101,9 +101,9 @@ async function setupGateway() {
         wallet: wallet,
         discovery: { enabled: false, asLocalhost: true }
         /*** Uncomment lines below to disable commit listener on submit ****/
-        // , eventHandlerOptions: {
-        //     strategy: null
-        // } 
+        , eventHandlerOptions: {
+            strategy: null
+        } 
     }
 
     // 2.4 Connect gateway to the network
@@ -119,21 +119,21 @@ async function setupGateway() {
  * To execute this add the line in main() => submitTxnTransaction(contract)
  * @param {object} contract 
  */
-// async function submitTxnTransaction(contract) {
-//     // Provide the function name
-//     let txn = contract.createTransaction('transfer')
+async function submitTxnTransaction(contract) {
+    // Provide the function name
+    let txn = contract.createTransaction('transfer')
     
-//     // Get the name of the transaction
-//     console.log(txn.getName())
+    // Get the name of the transaction
+    console.log(txn.getName())
 
-//     // Get the txn ID
-//     console.log(txn.getTransactionID())
+    // Get the txn ID
+    console.log(txn.getTransactionID())
 
-//     // Submit the transaction
-//     try{
-//         let response = await txn.submit('john', 'sam', '2')
-//         console.log("transaction.submit()=", response.toString())
-//     } catch(e) {
-//         console.log(e)
-//     }
-// }
+    // Submit the transaction
+    try{
+        let response = await txn.submit('john', 'sam', '2')
+        console.log("transaction.submit()=", response.toString())
+    } catch(e) {
+        console.log(e)
+    }
+}
