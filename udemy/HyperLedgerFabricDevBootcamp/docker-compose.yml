@@ -1,0 +1,17 @@
+version: "2.4"
+
+services:
+    ubuntu:
+      container_name: ubuntu
+      build: 
+        context: .
+        dockerfile: Dockerfile
+      command:
+        - /bin/bash 
+        - -c 
+        - |
+          go version
+          tail -f /dev/null
+      volumes:
+        - .:/var/project
+      working_dir: /var/project
