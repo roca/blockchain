@@ -11,4 +11,11 @@ ENV GOROOT=/usr/local/go
 ENV GOPATH=/var/project/goProject
 ENV PATH=$PATH:$GOROOT/bin:$GOPATH/bin
 
-RUN go version
+RUN apt-get update
+RUN apt-get install -y curl
+RUN curl -sl https://deb.nodesource.com/setup_10.x | bash -
+RUN apt-get update
+RUN apt-get install -y nodejs
+RUN apt-get install -y git
+RUN apt-get install -y python
+RUN apt-get install -y libltdl-dev
