@@ -15,3 +15,15 @@ https://www.udemy.com/course/blockchain-complete-hyperledger-fabric-development-
 - Struct
 - Custom functions
 - Main function
+
+
+### Start network 
+```
+cd fabric-samples/test-network
+./network.sh up createChannel -ca -s couchdb
+```
+### Install chain code
+```
+cd fabric-samples/test-network
+./network.sh deployCC -ccn <NAME-OF-CHAINCODE> -ccp <PATH-TO-CHAINCODE-DIR> -ccl <CHAINCODE-LANGUAGE>
+```
