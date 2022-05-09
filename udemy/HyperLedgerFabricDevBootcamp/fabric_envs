@@ -1,0 +1,2 @@
+export PATH=${PATH}:/Users/romelcampbell/GitHub/Repos/blockchain/udemy/HyperLedgerFabricDevBootcamp/Fabric2.2/fabric-samples/bin/
+export PATH=${PATH}:/Users/romelcampbell/GitHub/Repos/blockchain/udemy/HyperLedgerFabricDevBootcamp/Fabric2.2/fabric-samples/config/
