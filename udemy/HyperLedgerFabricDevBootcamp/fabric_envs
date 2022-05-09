@@ -1,2 +1,30 @@
-export PATH=${PATH}:/Users/romelcampbell/GitHub/Repos/blockchain/udemy/HyperLedgerFabricDevBootcamp/Fabric2.2/fabric-samples/bin/
-export PATH=${PATH}:/Users/romelcampbell/GitHub/Repos/blockchain/udemy/HyperLedgerFabricDevBootcamp/Fabric2.2/fabric-samples/config/
+#!/bin/sh
+
+export FABRIC_SAMPLES_DIR=$HOME/GitHub/Repos/blockchain/udemy/HyperLedgerFabricDevBootcamp/Fabric2.2/fabric-samples
+export PATH=${PATH}:${FABRIC_SAMPLES_DIR}/bin
+export FABRIC_CFG_PATH=${FABRIC_SAMPLES_DIR}/config
+
+# Environment variables for Org1
+
+export CORE_PEER_TLS_ENABLED=true
+export CORE_PEER_LOCALMSPID="Org1MSP"
+export CORE_PEER_TLS_ROOTCERT_FILE=${FABRIC_SAMPLES_DIR}/test-network/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
+export CORE_PEER_MSPCONFIGPATH=${FABRIC_SAMPLES_DIR}/test-network/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
+export CORE_PEER_ADDRESS=localhost:7051
+
+
+# Environment variables for Org2
+
+export CORE_PEER_TLS_ENABLED=true
+export CORE_PEER_LOCALMSPID="Org2MSP"
+export CORE_PEER_TLS_ROOTCERT_FILE=${FABRIC_SAMPLES_DIR}/test-network/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
+export CORE_PEER_MSPCONFIGPATH=${FABRIC_SAMPLES_DIR}/test-network/organizations/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
+export CORE_PEER_ADDRESS=localhost:7051
+
+# Life cycle steps of the chaincode
+
+# 1. Package chaincode
+# peer lifecycle chaincode package property.tar.gz --path ../chaincode/property-app/go/ --lang golang --label property_1
+
+# 2. Install chaincode
+# peer lifecycle chaincode install property.tar.gz --peerAddresses peer0.org1.example.com:7051 
