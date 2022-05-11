@@ -16,6 +16,7 @@ if [[ "Org1" == "$org" ]]; then
 	export CORE_PEER_MSPCONFIGPATH=${FABRIC_SAMPLES_DIR}/test-network/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
 elif [[ "Org2" == "$org" ]]; then
 	echo "Environment variables for Org2"
+	export CORE_PEER_TLS_ENABLED=true
 	export CORE_PEER_LOCALMSPID="Org2MSP"
 	export CORE_PEER_TLS_ROOTCERT_FILE=${FABRIC_SAMPLES_DIR}/test-network/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
 	export CORE_PEER_MSPCONFIGPATH=${FABRIC_SAMPLES_DIR}/test-network/organizations/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
