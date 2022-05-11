@@ -4,7 +4,7 @@ org=${1}
 echo "org: ${org}"
 
 export FABRIC_SAMPLES_DIR=$HOME/GitHub/Repos/blockchain/udemy/HyperLedgerFabricDevBootcamp/Fabric2.2/fabric-samples
-export FABRIC_EXEC_DIR=$HOME/GitHub/Repos/blockchain/udemy/HyperLedgerFabricDevBootcamp/fabric-samples
+export FABRIC_EXEC_DIR=$HOME/GitHub/Repos/blockchain/udemy/HyperLedgerFabricDevBootcamp/Fabric2.2/fabric-samples
 export PATH=${PATH}:${FABRIC_EXEC_DIR}/bin
 export FABRIC_CFG_PATH=${FABRIC_SAMPLES_DIR}/config
  
