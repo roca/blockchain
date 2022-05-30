@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: volume-test
+  labels:
+    app: volume-test
+spec:
+  containers:
+    - name: volume-test-container
+      image: ubuntu
+      args: 
+        - bash
+      stdin: true
+      stdinOnce: true
+      tty: true
+      workingDir: /host
+      volumeMounts:
+        - mountPath: /host
+          name: host-mount
+  volumes:
+    - name: host-mount
+      hostPath:
+        path: /host

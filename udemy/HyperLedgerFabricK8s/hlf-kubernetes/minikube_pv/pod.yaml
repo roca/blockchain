@@ -19,8 +19,8 @@ spec:
         - containerPort: 80
       volumeMounts:
         - mountPath: /usr/share/nginx/html/
-          name: myvolume
+          name: host-mount
   volumes:
-    - name: myvolume
-      persistentVolumeClaim:
-        claimName: mypvc
+    - name: host-mount
+      hostPath:
+        path: /data
