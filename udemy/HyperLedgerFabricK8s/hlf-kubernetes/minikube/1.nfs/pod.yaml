@@ -22,5 +22,5 @@ spec:
           name: host-mount
   volumes:
     - name: host-mount
-      hostPath:
-        path: /data
+      persistentVolumeClaim:
+        claimName: mypvc

@@ -3,6 +3,7 @@ kind: PersistentVolume
 metadata:
   name: pv0001
 spec:
+  storageClassName: slow
   accessModes:
     - ReadWriteOnce
   capacity:
