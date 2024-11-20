@@ -4,12 +4,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log"
-	"math/big"
 	"os"
 
 	"github.com/ardanlabs/ethereum"
-	"github.com/ardanlabs/ethereum/currency"
 	"github.com/ardanlabs/smartcontract/app/basic/contract/go/basic"
 	"github.com/ethereum/go-ethereum/common"
 )
@@ -27,7 +24,7 @@ func main() {
 	}
 }
 
-func run() (err error) {
+func run() error {
 	ctx := context.Background()
 
 	backend, err := ethereum.CreateDialedBackend(ctx, ethereum.NetworkLocalhost)
@@ -49,17 +46,6 @@ func run() (err error) {
 	fmt.Println("\nInput Values")
 	fmt.Println("----------------------------------------------------")
 	fmt.Println("fromAddress:", clt.Address())
-
-	// =========================================================================
-
-	converter, err := currency.NewConverter(basic.BasicMetaData.ABI, coinMarketCapKey)
-	if err != nil {
-		converter = currency.NewDefaultConverter(basic.BasicMetaData.ABI)
-	}
-	oneETHToUSD, oneUSDToETH := converter.Values()
-
-	fmt.Println("oneETHToUSD:", oneETHToUSD)
-	fmt.Println("oneUSDToETH:", oneUSDToETH)
 
 	// =========================================================================
 
@@ -87,45 +73,15 @@ func run() (err error) {
 
 	// =========================================================================
 
-	startingBalance, err := clt.Balance(ctx)
-	if err != nil {
-		return err
-	}
-	defer func() {
-		endingBalance, dErr := clt.Balance(ctx)
-		if dErr != nil {
-			err = dErr
-			return
-		}
-		fmt.Print(converter.FmtBalanceSheet(startingBalance, endingBalance))
-	}()
-
-	// =========================================================================
-
-	const gasLimit = 1600000
-	const gasPriceGwei = 39.576
-	const valueGwei = 0.0
-	tranOpts, err := clt.NewTransactOpts(ctx, gasLimit, currency.GWei2Wei(big.NewFloat(gasPriceGwei)), big.NewFloat(valueGwei))
-	if err != nil {
-		return err
-	}
-
-	// =========================================================================
-
 	key := "bill"
-	value := big.NewInt(1_000_000)
-
-	tx, err := storeCon.SetItem(tranOpts, key, value)
-	if err != nil {
-		log.Fatal("SetItem ERROR:", err)
-	}
-	fmt.Print(converter.FmtTransaction(tx))
-
-	receipt, err := clt.WaitMined(ctx, tx)
+	result, err := storeCon.Items(nil, key)
 	if err != nil {
 		return err
 	}
-	fmt.Print(converter.FmtTransactionReceipt(receipt, tx.GasPrice()))
+
+	fmt.Println("\nRead Value")
+	fmt.Println("----------------------------------------------------")
+	fmt.Println("value:", result)
 
 	return nil
 }
