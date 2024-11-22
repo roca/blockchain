@@ -87,6 +87,11 @@ basic-write:
 basic-read:
 	CGO_ENABLED=0 go run app/basic/cmd/read/main.go
 
+# This will execute a test for the basic package.
+basic-test:
+	cd app/basic/contract/go/basic; \
+	go test . -v
+
 # ==============================================================================
 # These commands start the Ethereum node and provide examples of attaching
 # directly with potential commands to try, and creating a new account if necessary.
