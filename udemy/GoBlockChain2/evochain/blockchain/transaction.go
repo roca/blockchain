@@ -10,15 +10,17 @@ type Transaction struct {
 }
 
 func NewTransaction(from, to string, value int64, data []byte) *Transaction {
-	t := new(Transaction)
-	t.From = from
-	t.To = to
-	t.Value = value
-	t.Data = data
+	t := &Transaction{
+		From:  from,
+		To:    to,
+		Value: value,
+		Data:  data,
+	}
+	
 	return t
 }
 
-func (t Transaction) ToJson() string {
+func (t Transaction) String() string {
 	nb, err := json.Marshal(t)
 	if err != nil {
 		return err.Error()
