@@ -1,6 +1,7 @@
 package main
 
 import (
+	"evochain/blockchain"
 	"evochain/constants"
 	"log"
 )
@@ -10,5 +11,6 @@ func init() {
 }
 
 func main() {
-	log.Println("Hello  world !")
+	block := blockchain.NewBlock("0x", 1)
+	log.Println(block)
 }
