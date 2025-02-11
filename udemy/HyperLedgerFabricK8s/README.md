@@ -11,7 +11,12 @@ https://www.udemy.com/course/hyperledger-fabric-on-kubernetes-complete-guide
 
 
 ```
-minikube mount $HOME/GitHub/Repos/blockchain/udemy/HyperLedgerFabricK8s/data:/data
+minikube mount $HOME/GitHub/Repos/blockchain/udemy/HyperLedgerFabricK8s/data:/data -p -p singlenode-demo
 minikube start --driver=hyperkit --mount-string="$HOME/GitHub/Repos/blockchain/udemy/HyperLedgerFabricK8s/data:/data" --mount -p singlenode-demo
 minikube start --driver=virtualbox  --mount-string="$HOME/GitHub/Repos/blockchain/udemy/HyperLedgerFabricK8s/data:/data" --mount -p singlenode-demo
+
+#--nodes 4
+minikube mount $HOME/GitHub/Repos/blockchain/udemy/HyperLedgerFabricK8s/data:/data -p multinode-demo
+minikube start --driver=hyperkit --mount-string="$HOME/GitHub/Repos/blockchain/udemy/HyperLedgerFabricK8s/data:/data" --mount --nodes 4 -p multinode-demo
+minikube start --driver=virtualbox  --mount-string="$HOME/GitHub/Repos/blockchain/udemy/HyperLedgerFabricK8s/data:/data" --mount --node 4 -p multinode-demo
 ```
