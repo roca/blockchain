@@ -13,6 +13,7 @@ func init() {
 func main() {
 	block := blockchain.NewBlock("0x", 1)
 	log.Println(block)
+	log.Println("Hash of the Block",block.Hash())
 
 	transaction := blockchain.NewTransaction("0x1", "0x2", 12, []byte{})
 	log.Println(transaction)

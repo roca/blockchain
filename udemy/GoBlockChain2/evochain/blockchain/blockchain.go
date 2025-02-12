@@ -16,11 +16,15 @@ func NewBlockchain(genesisBlock *Block) *Blockchain {
 	return bc
 }
 
-func (bc Blockchain) String() string {
+func (bc *Blockchain) String() string {
 	nb, err := json.Marshal(bc)
 	if err != nil {
 		return err.Error()
 	}
 
 	return string(nb)
+}
+
+func (bc *Blockchain) AddTransaction(t *Transaction) {
+	bc.TransactionPool = append(bc.TransactionPool, t)
 }
