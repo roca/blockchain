@@ -30,7 +30,20 @@ func (bc *Blockchain) String() string {
 }
 
 func (bc *Blockchain) AddBlock(b *Block) {
-	// bc.Blocks = append(bc.Blocks, b)
+	m := map[string]bool{}
+	for _, txn := range b.Transactions {
+		m[txn.TransactionHash] = true
+	}
+
+	// remove the transactions from the pool``
+	for idx,txn := range bc.TransactionPool {
+		_, ok := m[txn.TransactionHash]
+		if ok {
+			bc.TransactionPool = append(bc.TransactionPool[:idx], bc.TransactionPool[idx+1:]...)
+		}
+	}
+
+	bc.Blocks = append(bc.Blocks, b)
 }
 
 func (bc *Blockchain) AddTransaction(t *Transaction) {
@@ -59,6 +72,9 @@ func (bc *Blockchain) ProofOfWorkMining(minersAddress string) {
 			rewardTxn := NewTransaction(constants.BLOCKCHAIN_ADDRESS, minersAddress, constants.MINING_REWARD, []byte{})
 			guessBlock.Transactions = append(guessBlock.Transactions, rewardTxn)
 			bc.AddBlock(guessBlock)
+			prevHash = bc.Blocks[len(bc.Blocks)-1].Hash()
+			nonce = 0
+			continue
 		}
 		nonce++
 	}

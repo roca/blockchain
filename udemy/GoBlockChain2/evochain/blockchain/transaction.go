@@ -1,16 +1,20 @@
 package blockchain
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
+	"evochain/constants"
 	"math"
 )
 
 type Transaction struct {
-	From  string `json:"from"`
-	To    string `json:"to"`
-	Value uint64  `json:"value"`
-	Data  []byte `json:"data"`
-	Status string `json:"status"`
+	From            string `json:"from"`
+	To              string `json:"to"`
+	Value           uint64 `json:"value"`
+	Data            []byte `json:"data"`
+	Status          string `json:"status"`
+	TransactionHash string `json:"transaction_hash"`
 }
 
 func NewTransaction(from, to string, value uint64, data []byte) *Transaction {
@@ -20,7 +24,7 @@ func NewTransaction(from, to string, value uint64, data []byte) *Transaction {
 		Value: value,
 		Data:  data,
 	}
-	
+	t.TransactionHash = t.Hash()
 	return t
 }
 
@@ -43,6 +47,16 @@ func (t *Transaction) IsValid() bool {
 	}
 
 	// TODO: check the signatures
-	
+
 	return true
+}
+
+func (t *Transaction) Hash() string {
+
+	bs := []byte(t.String())
+	sum := sha256.Sum256(bs)
+	hexRep := hex.EncodeToString(sum[:32])
+	formattedHexRep := constants.HEX_PREFIX + hexRep
+
+	return formattedHexRep
 }
