@@ -29,11 +29,15 @@ func (bc *Blockchain) String() string {
 	return string(nb)
 }
 
+func (bc *Blockchain) AddBlock(b *Block) {
+	// bc.Blocks = append(bc.Blocks, b)
+}
+
 func (bc *Blockchain) AddTransaction(t *Transaction) {
 	bc.TransactionPool = append(bc.TransactionPool, t)
 }
 
-func (bc *Blockchain) ProofOfWork() *Block {
+func (bc *Blockchain) ProofOfWorkMining(minersAddress string) {
 	// calulate the PrevHash
 	prevHash := bc.Blocks[len(bc.Blocks)-1].Hash()
 	// start with a 0 nonce
@@ -52,7 +56,9 @@ func (bc *Blockchain) ProofOfWork() *Block {
 		ourSolutionHash := guessHash[2 : 2+constants.MINING_DIFFICULTY]
 		// compare this hash with the mining difficulty
 		if ourSolutionHash == desiredHash {
-			return guessBlock
+			rewardTxn := NewTransaction(constants.BLOCKCHAIN_ADDRESS, minersAddress, constants.MINING_REWARD, []byte{})
+			guessBlock.Transactions = append(guessBlock.Transactions, rewardTxn)
+			bc.AddBlock(guessBlock)
 		}
 		nonce++
 	}
