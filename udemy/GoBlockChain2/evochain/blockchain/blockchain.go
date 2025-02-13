@@ -3,6 +3,7 @@ package blockchain
 import (
 	"encoding/json"
 	"evochain/constants"
+	"log"
 	"strings"
 )
 
@@ -36,7 +37,7 @@ func (bc *Blockchain) AddBlock(b *Block) {
 	}
 
 	// remove the transactions from the pool``
-	for idx,txn := range bc.TransactionPool {
+	for idx, txn := range bc.TransactionPool {
 		_, ok := m[txn.TransactionHash]
 		if ok {
 			bc.TransactionPool = append(bc.TransactionPool[:idx], bc.TransactionPool[idx+1:]...)
@@ -70,8 +71,13 @@ func (bc *Blockchain) ProofOfWorkMining(minersAddress string) {
 		// compare this hash with the mining difficulty
 		if ourSolutionHash == desiredHash {
 			rewardTxn := NewTransaction(constants.BLOCKCHAIN_ADDRESS, minersAddress, constants.MINING_REWARD, []byte{})
+			rewardTxn.Status = constants.SUCCESS
 			guessBlock.Transactions = append(guessBlock.Transactions, rewardTxn)
 			bc.AddBlock(guessBlock)
+			log.Println("BlockChain:\n", bc)
+			// log.Println("Block Mined with Nonce", nonce)
+			// log.Println("Hash of the Block", guessBlock.Hash())
+			log.Println(strings.Repeat("-", 80))
 			prevHash = bc.Blocks[len(bc.Blocks)-1].Hash()
 			nonce = 0
 			continue
