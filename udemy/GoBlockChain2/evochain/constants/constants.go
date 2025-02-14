@@ -10,4 +10,5 @@ const (
 	CURRENCY_NAME     = "evo"
 	DECIMAL           = 100
 	BLOCKCHAIN_ADDRESS = "Evochain_Faucet"
+	BLOCKCHAIN_DB_PATH = "database/evodb"
 )
